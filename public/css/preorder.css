@@ -1,0 +1,77 @@
+div.preorder-main>p {
+    margin-top: -20px;
+}
+
+div.preorder-container {
+    width: 75%;
+    margin-top: 25px;
+    margin-bottom: 45px;
+}
+
+div.preorder-container input[type=text] {
+    padding-left: 10px;
+    width: 160px;
+    margin-right: 5px;
+    height: 35px;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    outline:0;
+}
+
+div.weekday>label {
+    padding-top: 2px !important;
+}
+
+div.weekday div.checkbox.icheck {
+    padding-top: 5px !important;
+}
+
+div.weekday {
+    padding-left: 7px !important;
+}
+
+div.timing {
+    margin-bottom: 10px !important;
+    display: flex;
+    justify-content: space-between;
+}
+
+div.timings {
+    width: 374px;
+    min-height: 35px;
+    line-height: 26px;
+}
+
+a.add-hrs {
+    margin-left: 25px;
+    padding-top: 2px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+div.preorder-container button {
+    background: red;
+    color: white;
+    border: 2px solid red;
+    border-radius: 4px;
+    height: 35px;
+    width: 35px;
+    outline: 0;
+    cursor: pointer;
+}
+
+.mdtp__wrapper {
+    height: fit-content !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+div.available_for {
+    display: flex;
+}
