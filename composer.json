@@ -12,6 +12,7 @@
         "barryvdh/laravel-dompdf": "^0.8.2",
         "benwilkins/laravel-fcm-notification": "^4.0",
         "caouecs/laravel-lang": "~3.0",
+        "cartalyst/stripe": "^2.4",
         "doctrine/dbal": "^2.7",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.3",
