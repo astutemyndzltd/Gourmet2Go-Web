@@ -27,7 +27,7 @@
     <div class="login-logo">
         <a href="{{ url('/') }}">
 			{{-- <img src="{{$app_logo}}" alt="{{setting('app_name')}}"> --}}
-			<img src="https://app.gourmet2go.uk/storage/app/public/1/logo-bg.png" alt="{{setting('app_name')}}" style="margin-bottom:10px;">
+			<img src="https://portal.gurukitchen.co.uk/storage/app/public/1/logo-bg.png" alt="{{setting('app_name')}}" style="max-height:100px;max-width:600px;">
 		</a>
     </div>
     <!-- /.login-logo -->

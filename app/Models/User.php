@@ -58,7 +58,7 @@ class User extends Authenticatable implements HasMedia
         'email',
         'password',
         'api_token',
-        'device_token'
+        'device_token',
     ];
     /**
      * The attributes that should be casted to native types.

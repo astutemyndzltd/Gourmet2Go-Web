@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: OrderAPIController.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -30,7 +31,9 @@ use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
-use Stripe\Token;
+use Illuminate\Support\Facades\Config;
+use Cartalyst\Stripe\Stripe;
+//use Stripe\Token;
 
 /**
  * Class OrderController
@@ -87,6 +90,7 @@ class OrderAPIController extends Controller
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
+
         $orders = $this->orderRepository->all();
 
         return $this->sendResponse($orders->toArray(), 'Orders retrieved successfully');
@@ -118,8 +122,6 @@ class OrderAPIController extends Controller
         }
 
         return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
-
-
     }
 
     /**
@@ -131,14 +133,105 @@ class OrderAPIController extends Controller
      */
     public function store(Request $request)
     {
+        $requestData = $request->all();
+
+        if ($requestData['note'] == null) {
+            $request->merge(['note' => '']);
+        }
+
         $payment = $request->only('payment');
         if (isset($payment['payment']) && $payment['payment']['method']) {
-            if ($payment['payment']['method'] == "Credit Card (Stripe Gateway)") {
-                return $this->stripPayment($request);
+            if ($payment['payment']['method'] == "Credit Card") {
+                return $this->stripePaymentNew($request);
             } else {
                 return $this->cashPayment($request);
-
             }
+        }
+    }
+
+
+    private function stripePaymentNew(Request $request)
+    {
+        $input = $request->all();
+        
+        $stripe = Stripe::make(Config::get('services.stripe.secret'));
+        $paymentMethodId = isset($input['payment_method_id']) ? $input['payment_method_id'] : null;
+        $paymentIntentId = isset($input['payment_intent_id']) ? $input['payment_intent_id'] : null;
+        $paymentIntent = null;
+
+
+        try {
+                   
+            if ($paymentIntentId != null) {
+                $paymentIntent = $stripe->paymentIntents()->find($paymentIntentId);
+            } 
+            else {
+
+                $options = [
+                    'amount' => $input['order_amount'],
+                    'currency' => 'gbp',
+                    'payment_method' => $paymentMethodId
+                ];
+
+                $paymentIntent = $stripe->paymentIntents()->create($options);
+                $paymentIntent = $stripe->paymentIntents()->confirm($paymentIntent['id']);
+            }
+
+            if ($paymentIntent['status'] == 'succeeded') {
+
+                $user = $this->userRepository->findWithoutFail($input['user_id']);
+                if (empty($user)) return $this->sendError('User not found');
+
+                $order = null;
+
+                if (empty($input['delivery_address_id'])) {
+                    $order = $this->orderRepository->create(
+                        $request->only('user_id', 'order_status_id', 'tax', 'hint', 'order_type', 'note', 'preorder_info')
+                    );
+                } else {
+                    $order = $this->orderRepository->create(
+                        $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint', 'order_type', 'note', 'preorder_info')
+                    );
+                }
+
+                foreach ($input['foods'] as $foodOrder) {
+
+                    $extras = $foodOrder['extras'];
+                    unset($foodOrder['extras']);
+                    $foodOrder['order_id'] = $order->id;
+                    $fd = $this->foodOrderRepository->create($foodOrder);
+
+                    foreach($extras as $extra) {
+                        $fd->orderExtras()->create(['price' => $extra['price'], 'extra_id' => $extra['id'] ]);
+                    }
+                }
+                
+                $payment = $this->paymentRepository->create([
+                    "user_id" => $input['user_id'],
+                    "description" => trans("lang.payment_order_done"),
+                    "price" => $input['order_amount'],
+                    "status" => 'Succeded', 
+                    "method" => $input['card_brand'] . ' ' . substr($input['stripe_number'], strlen($input['stripe_number']) - 4),
+                ]);
+               
+                $this->orderRepository->update(['payment_id' => $payment->id], $order->id);
+                $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
+                $stripe->paymentIntents()->update($paymentIntent['id'], ['metadata' => [ 'Order Id' => $order->id ]]);
+
+                Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
+                
+                return $this->sendResponse($order->toArray(), 'succeeded');
+            } 
+            else if ($paymentIntent['status'] == 'requires_source_action') {
+                return $this->sendResponse(['client_secret' => $paymentIntent['client_secret']], 'requires action');
+            } 
+            else {
+                return $this->sendError('invalid status');
+            }
+
+        } 
+        catch (Exception $e) {
+            return $this->sendError('invalid status');
         }
     }
 
@@ -146,10 +239,11 @@ class OrderAPIController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|mixed
      */
-    private function stripPayment(Request $request)
+    /*private function stripPayment(Request $request)
     {
         $input = $request->all();
         $amount = 0;
+        
         try {
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
@@ -167,11 +261,11 @@ class OrderAPIController extends Controller
             if ($stripeToken->created > 0) {
                 if (empty($input['delivery_address_id'])) {
                     $order = $this->orderRepository->create(
-                        $request->only('user_id', 'order_status_id', 'tax', 'hint')
+                        $request->only('user_id', 'order_status_id', 'tax', 'hint', 'order_type', 'note', 'preorder_info')
                     );
                 } else {
                     $order = $this->orderRepository->create(
-                        $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint')
+                        $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint', 'order_type', 'note', 'preorder_info')
                     );
                 }
                 foreach ($input['foods'] as $foodOrder) {
@@ -181,7 +275,7 @@ class OrderAPIController extends Controller
                 }
                 $amount += $order->delivery_fee;
                 $amountWithTax = $amount + ($amount * $order->tax / 100);
-                $charge = $user->charge((int)($amountWithTax * 100), ['source' => $stripeToken]);
+                $charge = $user->charge((int)($amountWithTax * 100), ['source' => $stripeToken, 'metadata' => ['order-id' => $order->id]]);
                 $payment = $this->paymentRepository->create([
                     "user_id" => $input['user_id'],
                     "description" => trans("lang.payment_order_done"),
@@ -200,7 +294,8 @@ class OrderAPIController extends Controller
         }
 
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
-    }
+    }*/
+
 
     /**
      * @param Request $request
@@ -211,9 +306,11 @@ class OrderAPIController extends Controller
         $input = $request->all();
         $amount = 0;
         try {
+
             $order = $this->orderRepository->create(
-                $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint')
+                $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee', 'hint', 'order_type')
             );
+
             foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
@@ -234,7 +331,6 @@ class OrderAPIController extends Controller
             $this->cartRepository->deleteWhere(['user_id' => $order->user_id]);
 
             Notification::send($order->foodOrders[0]->food->restaurant->users, new NewOrder($order));
-
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -261,9 +357,11 @@ class OrderAPIController extends Controller
 
         try {
             $order = $this->orderRepository->update($input, $id);
+
             if (isset($input['order_status_id']) && $input['order_status_id'] == 5 && !empty($order)) {
                 $this->paymentRepository->update(['status' => 'Paid'], $order['payment_id']);
             }
+
             event(new OrderChangedEvent($oldStatus, $order));
 
             if (setting('enable_notifications', false)) {
@@ -278,12 +376,10 @@ class OrderAPIController extends Controller
                     }
                 }
             }
-
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
 
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
-
 }

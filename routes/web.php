@@ -17,6 +17,11 @@
 |
 */
 
+Route::get('categories/rearrange', 'CategoryController@rearrange');
+Route::post('categories/store-rearranged', 'CategoryController@storeRearranged');
+
+
+
 Route::get('login/{service}', 'Auth\LoginController@redirectToProvider');
 Route::get('login/{service}/callback', 'Auth\LoginController@handleProviderCallback');
 Auth::routes();
@@ -34,6 +39,7 @@ Route::get('firebase/sw-js', 'AppSettingController@initFirebase');
 
 
 Route::get('storage/app/public/{id}/{conversion}/{filename?}', 'UploadController@storage');
+
 Route::middleware('auth')->group(function () {
     Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
     Route::get('/', 'DashboardController@index')->name('dashboard');
@@ -91,7 +97,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('restaurants', 'RestaurantController')->except([
         'show'
     ]);
-
+    
+ 
     Route::post('categories/remove-media', 'CategoryController@removeMedia');
     Route::resource('categories', 'CategoryController')->except([
         'show'
@@ -142,6 +149,7 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
+    
     Route::resource('orders', 'OrderController');
 
     Route::resource('notifications', 'NotificationController')->except([

@@ -66,7 +66,7 @@ class StatusChangedOrder extends Notification
             'title' => trans('lang.notification_your_order', ['order_id' => $this->order->id, 'order_status' => $this->order->orderStatus->status]),
             'text' => $this->order->foodOrders[0]->food->restaurant->name,
             'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
-            'sound' => 'default'
+			'sound' => 'default'
         ];
         $data = [
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",

@@ -50,7 +50,7 @@ class UserAPIController extends Controller
             if (auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
-				$user->hasRole('driver');
+                $user->hasRole('driver');
                 $user->device_token = $request->input('device_token', '');
                 $user->save();
                 return $this->sendResponse($user, 'User retrieved successfully');
@@ -80,7 +80,6 @@ class UserAPIController extends Controller
             $user->email = $request->input('email');
             $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
-            //$user->hasRole('driver');
             $user->api_token = str_random(60);
             $user->save();
 
@@ -148,6 +147,7 @@ class UserAPIController extends Controller
                 'app_version' => '',
                 'enable_version' => '',
                 'distance_unit' => '',
+                'stripe_key' => ''
             ]
         );
 
@@ -155,7 +155,7 @@ class UserAPIController extends Controller
             return $this->sendError('Settings not found', 401);
         }
 
-        return $this->sendResponse($settings, 'Settings retrieved successfully');
+        return $this->sendResponse('hello', 'Settings retrieved successfully');
     }
 
     /**

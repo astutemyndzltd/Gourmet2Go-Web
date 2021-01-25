@@ -1,12 +1,12 @@
 @if($customFields)
-    <h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
+<h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
 @endif
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
     <!-- Name Field -->
     <div class="form-group row ">
         {!! Form::label('name', trans("lang.restaurant_name"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_name_placeholder")]) !!}
+            {!! Form::text('name', null, ['class' => 'form-control','placeholder'=> trans("lang.restaurant_name_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_name_help") }}
             </div>
@@ -29,11 +29,23 @@
             <div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>
         </div>
     </div>
+
+    <!-- min_order_amount Field -->
+    <div class="form-group row ">
+        {!! Form::label('min_order_amount', 'Minimum Order Amount', ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('min_order_amount', isset($restaurant) ? $restaurant->min_order_amount : 0, ['class' => 'form-control','step'=>'any','placeholder'=> 'Edit the minimum order amount']) !!}
+            <div class="form-text text-muted">
+                Enter the minimum order amount for this restaurant
+            </div>
+        </div>
+    </div>
+
     <!-- delivery_fee Field -->
     <div class="form-group row ">
         {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::number('delivery_fee', null,  ['class' => 'form-control','step'=>'any','placeholder'=>  trans("lang.restaurant_delivery_fee_placeholder")]) !!}
+            {!! Form::number('delivery_fee', null, ['class' => 'form-control','step'=>'any','placeholder'=> trans("lang.restaurant_delivery_fee_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_delivery_fee_help") }}
             </div>
@@ -44,23 +56,25 @@
     <div class="form-group row ">
         {!! Form::label('delivery_range', trans("lang.restaurant_delivery_range"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::number('delivery_range', null,  ['class' => 'form-control', 'step'=>'any','placeholder'=>  trans("lang.restaurant_delivery_range_placeholder")]) !!}
+            {!! Form::number('delivery_range', null, ['class' => 'form-control', 'step'=>'any','placeholder'=> trans("lang.restaurant_delivery_range_placeholder")]) !!}
             <div class="form-text text-muted">
-                {{ trans("lang.restaurant_delivery_range_help") }}
+                {{ trans("lang.restaurant_delivery_range_help") . " in km" }}
             </div>
         </div>
     </div>
 
     <!-- default_tax Field -->
-    <div class="form-group row ">
+    {{-- <div class="form-group row ">
         {!! Form::label('default_tax', trans("lang.restaurant_default_tax"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::number('default_tax', null,  ['class' => 'form-control', 'step'=>'any','placeholder'=>  trans("lang.restaurant_default_tax_placeholder")]) !!}
+            {!! Form::number('default_tax', null, ['class' => 'form-control', 'step'=>'any','placeholder'=> trans("lang.restaurant_default_tax_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_default_tax_help") }}
             </div>
         </div>
-    </div>
+    </div> --}}
+
+    <input type="hidden" name="default_tax" value="0">
 
     @endhasanyrole
 
@@ -68,7 +82,7 @@
     <div class="form-group row ">
         {!! Form::label('phone', trans("lang.restaurant_phone"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('phone', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_phone_placeholder")]) !!}
+            {!! Form::text('phone', null, ['class' => 'form-control','placeholder'=> trans("lang.restaurant_phone_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_phone_help") }}
             </div>
@@ -79,7 +93,7 @@
     <div class="form-group row ">
         {!! Form::label('mobile', trans("lang.restaurant_mobile"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('mobile', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_mobile_placeholder")]) !!}
+            {!! Form::text('mobile', null, ['class' => 'form-control','placeholder'=> trans("lang.restaurant_mobile_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_mobile_help") }}
             </div>
@@ -90,7 +104,7 @@
     <div class="form-group row ">
         {!! Form::label('address', trans("lang.restaurant_address"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('address', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_address_placeholder")]) !!}
+            {!! Form::text('address', null, ['class' => 'form-control','placeholder'=> trans("lang.restaurant_address_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_address_help") }}
             </div>
@@ -101,7 +115,7 @@
     <div class="form-group row ">
         {!! Form::label('latitude', trans("lang.restaurant_latitude"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('latitude', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_latitude_placeholder")]) !!}
+            {!! Form::text('latitude', null, ['class' => 'form-control','placeholder'=> trans("lang.restaurant_latitude_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_latitude_help") }}
             </div>
@@ -112,7 +126,7 @@
     <div class="form-group row ">
         {!! Form::label('longitude', trans("lang.restaurant_longitude"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::text('longitude', null,  ['class' => 'form-control','placeholder'=>  trans("lang.restaurant_longitude_placeholder")]) !!}
+            {!! Form::text('longitude', null, ['class' => 'form-control','placeholder'=> trans("lang.restaurant_longitude_placeholder")]) !!}
             <div class="form-text text-muted">
                 {{ trans("lang.restaurant_longitude_help") }}
             </div>
@@ -131,16 +145,31 @@
 
     <!-- 'Boolean available_for_delivery Field' -->
     <div class="form-group row ">
-        {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="checkbox icheck">
-            <label class="col-9 ml-2 form-check-inline">
-                {!! Form::hidden('available_for_delivery', 0) !!}
-                {!! Form::checkbox('available_for_delivery', 1, null) !!}
-            </label>
+
+        <div class="available_for">
+            {!! Form::label('available_for_delivery', trans("lang.restaurant_available_for_delivery"),['class' => 'col-7 control-label text-right']) !!}
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('available_for_delivery', 0) !!}
+                    {!! Form::checkbox('available_for_delivery', 1, null) !!}
+                </label>
+            </div>
         </div>
+
+        <div class="available_for">
+            {!! Form::label('available_for_preorder', 'Available for preorder', ['class' => 'col-7 control-label text-right']) !!}
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    {!! Form::hidden('available_for_preorder', 0) !!}
+                    {!! Form::checkbox('available_for_preorder', 1, null) !!}
+                </label>
+            </div>
+        </div>
+
     </div>
 
 </div>
+
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
     <!-- Image Field -->
@@ -156,6 +185,7 @@
             </div>
         </div>
     </div>
+
     @prepend('scripts')
         <script type="text/javascript">
             var var15671147011688676454ble = '';
@@ -202,12 +232,12 @@
         </script>
 @endprepend
 
-<!-- Description Field -->
+    <!-- Description Field -->
     <div class="form-group row ">
         {!! Form::label('description', trans("lang.restaurant_description"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
             {!! Form::textarea('description', null, ['class' => 'form-control','placeholder'=>
-             trans("lang.restaurant_description_placeholder")  ]) !!}
+            trans("lang.restaurant_description_placeholder") ]) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_description_help") }}</div>
         </div>
     </div>
@@ -216,12 +246,67 @@
         {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
             {!! Form::textarea('information', null, ['class' => 'form-control','placeholder'=>
-             trans("lang.restaurant_information_placeholder")  ]) !!}
+            trans("lang.restaurant_information_placeholder") ]) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_information_help") }}</div>
         </div>
     </div>
 
 </div>
+
+<!-- pre-order -->
+<div class="col-12 custom-field-container preorder-main">
+
+    <input type="hidden" name="opening_times" id="opening_times">
+
+    <?php $weekdays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']; ?>
+
+    <h5 class="col-12 pb-4">Set Your Opening Hours</h5>
+    <p class="col-12">Select each day you're open</p>
+
+    <?php $oldOpeningTimes = old('opening_times') != null ? json_decode(old('opening_times'), true) : null; ?>
+
+
+    <input type="hidden" value="{{ json_encode($oldOpeningTimes) }}" > 
+
+    <div class="preorder-container">
+        @foreach ($weekdays as $day)
+        <div class="weekday form-group row">
+            
+            <div class="checkbox icheck">
+                <label class="col-9 ml-2 form-check-inline">
+                    <?php
+                        $resInactive = !isset($restaurant) || $restaurant->opening_times == null || $restaurant->opening_times[$day] == null;
+                        $oldOpenTimesInactive = $oldOpeningTimes == null || $oldOpeningTimes[$day] == null;
+                        $dayChecked = !($resInactive && $oldOpenTimesInactive);
+                    ?>              
+                    {!! Form::checkbox($day, 1, $dayChecked, [ 'id' => $day]) !!}
+                </label>
+            </div>
+
+            {!! Form::label($day, ucfirst($day), ['class' => 'col-2 control-label']) !!}
+
+            <div class="timings">
+                @if($resInactive && $oldOpenTimesInactive)
+                    <span>Closed all day</span>
+                @else
+                    <?php $spans = isset($oldOpeningTimes) ? $oldOpeningTimes[$day] : $restaurant->opening_times[$day]; ?>
+                    @foreach($spans as $timeSpan)
+                        <div class="timing">
+                            <input type="text" readonly class="start" placeholder="Start time" value="{!! $timeSpan['opens_at'] !!}">
+                            <input type="text" readonly class="end" placeholder="End time" value="{!! $timeSpan['closes_at'] !!}">
+                            <button type="button"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                        </div>
+                    @endforeach
+                @endif
+            </div>
+
+            <a class="add-hrs">+ Add Hours</a>
+
+        </div>
+        @endforeach
+    </div>
+</div>
+
 
 @hasrole('admin')
 <div class="col-12 custom-field-container">
@@ -242,7 +327,7 @@
         <div class="form-group row ">
             {!! Form::label('admin_commission', trans("lang.restaurant_admin_commission"), ['class' => 'col-3 control-label text-right']) !!}
             <div class="col-9">
-                {!! Form::number('admin_commission', null,  ['class' => 'form-control', 'step'=>'any', 'placeholder'=>  trans("lang.restaurant_admin_commission_placeholder")]) !!}
+                {!! Form::number('admin_commission', null, ['class' => 'form-control', 'step'=>'any', 'placeholder'=> trans("lang.restaurant_admin_commission_placeholder")]) !!}
                 <div class="form-text text-muted">
                     {{ trans("lang.restaurant_admin_commission_help") }}
                 </div>
@@ -262,14 +347,16 @@
 @endhasrole
 
 @if($customFields)
-    <div class="clearfix"></div>
-    <div class="col-12 custom-field-container">
-        <h5 class="col-12 pb-4">{!! trans('lang.custom_field_plural') !!}</h5>
-        {!! $customFields !!}
-    </div>
+<div class="clearfix"></div>
+<div class="col-12 custom-field-container">
+    <h5 class="col-12 pb-4">{!! trans('lang.custom_field_plural') !!}</h5>
+    {!! $customFields !!}
+</div>
 @endif
+
+
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
-    <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.restaurant')}}</button>
+    <button id="save-restaurant" type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.restaurant')}}</button>
     <a href="{!! route('restaurants.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>

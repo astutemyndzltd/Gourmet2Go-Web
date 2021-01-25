@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantController.php
  * Last modified: 2020.04.30 at 08:21:08
@@ -25,6 +26,7 @@ use App\Repositories\CuisineRepository;
 use App\Repositories\RestaurantRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
+use App\Rules\OpeningTimesRule;
 use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -101,10 +103,12 @@ class RestaurantController extends Controller
         $driversSelected = [];
         $cuisinesSelected = [];
         $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+
         if ($hasCustomField) {
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
             $html = generateCustomField($customFields);
         }
+
         return view('restaurants.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
     }
 
@@ -117,11 +121,23 @@ class RestaurantController extends Controller
      */
     public function store(CreateRestaurantRequest $request)
     {
+        $request->validate(['opening_times' => new OpeningTimesRule]);
+        
+        $request->merge(['opening_times' => json_decode($request->input('opening_times'))]);
+
+        if($request->exists('min_order_amount') && $request->input('min_order_amount') == null)
+        {
+            $request->merge(['min_order_amount' => 0]);
+        }
+        
         $input = $request->all();
-        if (auth()->user()->hasRole(['manager','client'])) {
+
+        if (auth()->user()->hasRole(['manager', 'client'])) {
             $input['users'] = [auth()->id()];
         }
+
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        
         try {
             $restaurant = $this->restaurantRepository->create($input);
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
@@ -155,7 +171,6 @@ class RestaurantController extends Controller
 
         if (empty($restaurant)) {
             Flash::error('Restaurant not found');
-
             return redirect(route('restaurants.index'));
         }
 
@@ -179,11 +194,13 @@ class RestaurantController extends Controller
             Flash::error(__('lang.not_found', ['operator' => __('lang.restaurant')]));
             return redirect(route('restaurants.index'));
         }
-        if($restaurant['active'] == 0){
+
+        if ($restaurant['active'] == 0) {
             $user = $this->userRepository->getByCriteria(new ManagersClientsCriteria())->pluck('name', 'id');
         } else {
-        $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
+            $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
         }
+
         $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
 
@@ -195,6 +212,7 @@ class RestaurantController extends Controller
         $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
+        
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
@@ -213,6 +231,15 @@ class RestaurantController extends Controller
      */
     public function update($id, UpdateRestaurantRequest $request)
     {
+        $request->validate(['opening_times' => new OpeningTimesRule]);
+        
+        $request->merge(['opening_times' => json_decode($request->input('opening_times'))]);
+
+        if($request->exists('min_order_amount') && $request->input('min_order_amount') == null)
+        {
+            $request->merge(['min_order_amount' => 0]);
+        }
+        
         $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
         $oldRestaurant = $this->restaurantRepository->findWithoutFail($id);
 
@@ -220,8 +247,10 @@ class RestaurantController extends Controller
             Flash::error('Restaurant not found');
             return redirect(route('restaurants.index'));
         }
+
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        
         try {
 
             $restaurant = $this->restaurantRepository->update($input, $id);

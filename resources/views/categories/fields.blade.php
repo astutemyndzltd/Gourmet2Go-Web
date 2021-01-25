@@ -38,6 +38,8 @@
     </div>
   </div>
 </div>
+
+
 @prepend('scripts')
 <script type="text/javascript">
     var var15866134771240834480ble = '';

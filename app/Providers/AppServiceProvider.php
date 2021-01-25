@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: AppServiceProvider.php
  * Last modified: 2020.06.10 at 18:56:11
@@ -11,6 +12,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Laravel\Cashier\Cashier;
 use Stripe\Stripe;
@@ -80,9 +82,14 @@ class AppServiceProvider extends ServiceProvider
 
             config(['app.timezone' => setting('timezone')]);
 
+            Validator::extend('phone', function ($attribute, $value, $parameters, $validator) {
+                return preg_match('%^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[\-\.\ \\\/]?)?((?:\(?\d{1,}\)?[\-\.\ \\\/]?){0,})(?:[\-\.\ \\\/]?(?:#|ext\.?|extension|x)[\-\.\ \\\/]?(\d+))?$%i', $value) && strlen($value) >= 10;
+            });
+
+            Validator::replacer('phone', function ($message, $attribute, $rule, $parameters) {
+                return str_replace(':attribute', $attribute, ':attribute is invalid phone number');
+            });
         } catch (\Exception $exception) {
-
-
         }
     }
 

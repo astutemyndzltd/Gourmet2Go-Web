@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: RestaurantAPIController.php
  * Last modified: 2020.05.04 at 09:04:19
@@ -14,6 +15,7 @@ use App\Criteria\Restaurants\ActiveCriteria;
 use App\Criteria\Restaurants\RestaurantsOfCuisinesCriteria;
 use App\Criteria\Restaurants\NearCriteria;
 use App\Criteria\Restaurants\PopularCriteria;
+use App\Criteria\Restaurants\MixedCriteria;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use App\Repositories\CustomFieldRepository;
@@ -51,8 +53,21 @@ class RestaurantAPIController extends Controller
         $this->restaurantRepository = $restaurantRepo;
         $this->customFieldRepository = $customFieldRepo;
         $this->uploadRepository = $uploadRepo;
-
     }
+
+    public function nearby(Request $request)
+    {
+        try {
+            $restaurants = $this->restaurantRepository->pushCriteria(new MixedCriteria($request));
+            $restaurants = $this->restaurantRepository->all();
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        
+        return $this->sendResponse($restaurants->toArray(), 'Restaurants retrieved successfully');
+    }
+
+
 
     /**
      * Display a listing of the Restaurant.
@@ -74,7 +89,6 @@ class RestaurantAPIController extends Controller
             }
             $this->restaurantRepository->pushCriteria(new ActiveCriteria());
             $restaurants = $this->restaurantRepository->all();
-
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }
@@ -109,6 +123,8 @@ class RestaurantAPIController extends Controller
         if (empty($restaurant)) {
             return $this->sendError('Restaurant not found');
         }
+
+        //file_put_contents('order.txt', json_encode($restaurant->toArray()));
 
         return $this->sendResponse($restaurant->toArray(), 'Restaurant retrieved successfully');
     }

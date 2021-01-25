@@ -91,10 +91,12 @@ class OrderController extends Controller
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
         $hasCustomField = in_array($this->orderRepository->model(), setting('custom_field_models', []));
+
         if ($hasCustomField) {
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
             $html = generateCustomField($customFields);
         }
+
         return view('orders.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
     }
 
@@ -109,6 +111,7 @@ class OrderController extends Controller
     {
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
+
         try {
             $order = $this->orderRepository->create($input);
             $order->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
@@ -136,15 +139,17 @@ class OrderController extends Controller
     {
         $this->orderRepository->pushCriteria(new OrdersOfUserCriteria(auth()->id()));
         $order = $this->orderRepository->findWithoutFail($id);
+
+
         if (empty($order)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
-
             return redirect(route('orders.index'));
         }
+
         $subtotal = 0;
 
         foreach ($order->foodOrders as $foodOrder) {
-            foreach ($foodOrder->extras as $extra) {
+            foreach ($foodOrder->orderExtras as $extra) {
                 $foodOrder->price += $extra->price;
             }
             $subtotal += $foodOrder->price * $foodOrder->quantity;
@@ -155,7 +160,58 @@ class OrderController extends Controller
         $total += $taxAmount;
         $foodOrderDataTable->id = $id;
 
-        return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount]);
+
+        /*********** ADDING NECESSARY DATA FOR RECEIPT ********/
+        
+        $orderDetails = [];
+        $orderDetails['id'] = $order->id;
+        $orderDetails['hint'] = $order->hint;
+        $orderDetails['order_type'] = $order->order_type;
+        $orderDetails['delivery_address'] = $order->deliveryAddress ? $order->deliveryAddress->address : null;
+		$orderDetails['subtotal'] = $subtotal;
+		$orderDetails['tax'] = $order['tax'];
+		$orderDetails['tax_amount'] = $taxAmount;
+		$orderDetails['delivery_fee'] = $order['delivery_fee'];
+		$orderDetails['total'] = $total;
+		$orderDetails['restaurant_name'] = $order->foodOrders[0]->food->restaurant->name;
+		$orderDetails['driver_name'] = $order->driver ? $order->driver->name : null;
+		$orderDetails['customer_name'] = $order->user->name;
+		$orderDetails['customer_phone'] = $order->user->custom_fields['phone'] ? $order->user->custom_fields['phone']['view'] : null;
+        $orderDetails['payment_method'] = $order->payment->method;
+        $orderDetails['order_note'] = $order->note;
+        $orderDetails['preorder_info'] = $order->preorder_info;
+		
+		$foodCategories = [];
+		
+		foreach ($order->foodOrders as $foodOrder) {
+			$food = $foodOrder->food;
+			$category = $food->category;
+			
+			if(!array_key_exists($category->id, $foodCategories)) {
+				$foodCategories[$category->id] = ['name' => $category->name, 'foods' => [] ];
+			}
+				
+			$foodStrict = ['name' => $food->name, 'price' => $foodOrder->price, 'quantity' => $foodOrder->quantity, 'extras'=> []];
+											
+			for($i=0; $i<count($foodOrder->extras); $i++) 
+			{
+				$name = $foodOrder->extras[$i]->name;
+				$price = $foodOrder->extras[$i]->price;
+				$extra = ['name' => $name, 'price' => $price];
+				array_push($foodStrict['extras'], $extra);
+			}
+			
+			array_push($foodCategories[$category->id]['foods'], $foodStrict);	
+			
+		}
+		
+		$orderDetails['food_categories'] = array_values($foodCategories);
+						
+        //file_put_contents('order.txt', json_encode($order->payment)); 
+        
+        /*****************************************************/
+
+        return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount, "orderDetails" => $orderDetails]);
     }
 
     /**
@@ -170,9 +226,9 @@ class OrderController extends Controller
     {
         $this->orderRepository->pushCriteria(new OrdersOfUserCriteria(auth()->id()));
         $order = $this->orderRepository->findWithoutFail($id);
+
         if (empty($order)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
-
             return redirect(route('orders.index'));
         }
 
@@ -187,6 +243,7 @@ class OrderController extends Controller
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         $hasCustomField = in_array($this->orderRepository->model(), setting('custom_field_models', []));
+
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
@@ -207,24 +264,29 @@ class OrderController extends Controller
     {
         $this->orderRepository->pushCriteria(new OrdersOfUserCriteria(auth()->id()));
         $oldOrder = $this->orderRepository->findWithoutFail($id);
+
         if (empty($oldOrder)) {
             Flash::error(__('lang.not_found', ['operator' => __('lang.order')]));
             return redirect(route('orders.index'));
         }
+
         $oldStatus = $oldOrder->payment->status;
         $input = $request->all();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
+
         try {
 
             $order = $this->orderRepository->update($input, $id);
 
             if (setting('enable_notifications', false)) {
+
                 if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 
                 if (isset($input['driver_id']) && ($input['driver_id'] != $oldOrder['driver_id'])) {
                     $driver = $this->userRepository->findWithoutFail($input['driver_id']);
+                    
                     if (!empty($driver)) {
                         Notification::send([$driver], new AssignedOrder($order));
                     }

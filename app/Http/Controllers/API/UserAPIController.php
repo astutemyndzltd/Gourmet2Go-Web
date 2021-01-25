@@ -50,7 +50,7 @@ class UserAPIController extends Controller
             if (auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
-				$user->hasRole('client');					
+                $user->hasRole('client');
                 $user->device_token = $request->input('device_token', '');
                 $user->save();
                 return $this->sendResponse($user, 'User retrieved successfully');
@@ -80,7 +80,6 @@ class UserAPIController extends Controller
             $user->email = $request->input('email');
             $user->device_token = $request->input('device_token', '');
             $user->password = Hash::make($request->input('password'));
-            //$user->hasRole('client');
             $user->api_token = str_random(60);
             $user->save();
 
@@ -162,6 +161,7 @@ class UserAPIController extends Controller
                 'home_section_10'=> '',
                 'home_section_11'=> '',
                 'home_section_12'=> '',
+                'stripe_key' => ''
             ]
         );
 

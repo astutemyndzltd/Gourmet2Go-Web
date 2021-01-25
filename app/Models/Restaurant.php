@@ -52,8 +52,6 @@ class Restaurant extends Model implements HasMedia
 
     public $table = 'restaurants';
     
-
-
     public $fillable = [
         'name',
         'description',
@@ -70,6 +68,9 @@ class Restaurant extends Model implements HasMedia
         'closed',
         'information',
         'active',
+        'min_order_amount',
+        'available_for_preorder',
+        'opening_times'
     ];
 
     /**
@@ -93,7 +94,10 @@ class Restaurant extends Model implements HasMedia
         'available_for_delivery'=>'boolean',
         'closed'=>'boolean',
         'information' => 'string',
-        'active' =>'boolean'
+        'active' =>'boolean',
+        'min_order_amount' => 'double',
+        'available_for_preorder' => 'boolean',
+        'opening_times' => 'array'
     ];
 
     /**
@@ -108,6 +112,9 @@ class Restaurant extends Model implements HasMedia
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
         'admin_commission' => 'required|numeric|min:0',
+        'min_order_amount' => 'required|numeric',
+        'phone' => 'required|phone|min:10',
+        'mobile' => 'required|phone|min:10'
     ];
 
     /**
@@ -121,6 +128,9 @@ class Restaurant extends Model implements HasMedia
         'delivery_fee' => 'nullable|numeric|min:0',
         'longitude' => 'required|numeric',
         'latitude' => 'required|numeric',
+        'min_order_amount' => 'required|numeric',
+        'phone' => 'required|phone|min:10',
+        'mobile' => 'required|phone|min:10'
     ];
 
     /**
@@ -131,8 +141,7 @@ class Restaurant extends Model implements HasMedia
     protected $appends = [
         'custom_fields',
         'has_media',
-        'rate'
-        
+        'rate'      
     ];
 
     /**

@@ -28,6 +28,9 @@ class OrderRepository extends BaseRepository
         'delivery_address_id',
         'active',
         'driver_id',
+        'order_type',
+        'note',
+        'preorder_info'
     ];
 
     /**

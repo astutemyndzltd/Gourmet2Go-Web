@@ -28,8 +28,6 @@ class FoodOrder extends Model
 
     public $table = 'food_orders';
     
-
-
     public $fillable = [
         'price',
         'quantity',
@@ -96,12 +94,14 @@ class FoodOrder extends Model
         return $this->belongsTo(\App\Models\Food::class, 'food_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     **/
-    public function extras()
+    public function orderExtras() 
     {
-        return $this->belongsToMany(\App\Models\Extra::class, 'food_order_extras');
+        return $this->hasMany(\App\Models\FoodOrderExtra::class, 'food_order_id', 'id');
+    }
+
+    public function extras() 
+    {
+        return $this->belongsToMany(\App\Models\Extra::class, 'food_order_extras', 'food_order_id', 'extra_id')->select(['id', 'name', 'description', 'food_order_extras.price', 'food_id', 'extra_group_id']);
     }
 
     /**
