@@ -79,9 +79,14 @@
 
   let dropzoneFields = [];
   let ddlOrderStatus = $('#order_status_id');
+  let divStatusDuration = $('div.status-duration-container');
 
   function onWindowLoad() {
-    $(ddlOrderStatus).on('select2:select', e => console.log(e.params.data));
+    $(ddlOrderStatus).on('select2:select', e => {
+      let { data } = e.params;
+      if (data.id == 2 || data.id == 4) $(divStatusDuration).slideDown();
+      else $(divStatusDuration).slideUp();
+    });
   }
 
   $(window).on('load', onWindowLoad);
