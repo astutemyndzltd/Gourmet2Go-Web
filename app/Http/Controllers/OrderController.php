@@ -249,19 +249,22 @@ class OrderController extends Controller
 
             if ($id == $order->orderStatus->id) {
                 array_push($orderStatus, $allOrderStatus[$id]);
-            }
 
-            if ($id != 5) {
 
-                next($allOrderStatus);
+                if ($id != 5) {
 
-                if (key($allOrderStatus) == 4 && $order->order_type == 'Pickup') {
                     next($allOrderStatus);
+    
+                    if (key($allOrderStatus) == 4 && $order->order_type == 'Pickup') {
+                        next($allOrderStatus);
+                    }
+    
+                    array_push($orderStatus, $allOrderStatus[key($allOrderStatus)]);
+                    break;
                 }
-
-                array_push($orderStatus, $allOrderStatus[key($allOrderStatus)]);
-                break;
             }
+
+            
         }
 
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
