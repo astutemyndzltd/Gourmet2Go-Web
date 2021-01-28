@@ -267,6 +267,8 @@ class OrderController extends Controller
             
         }
 
+        echo json_encode($orderStatus);
+
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
         $hasCustomField = in_array($this->orderRepository->model(), setting('custom_field_models', []));
