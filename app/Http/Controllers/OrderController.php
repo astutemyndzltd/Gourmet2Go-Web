@@ -262,9 +262,7 @@ class OrderController extends Controller
                     array_push($orderStatus, [key($allOrderStatus) => $nextStatus]);
                     break;
                 }*/
-            }
-
-            
+            }            
         }
 
         file_put_contents('order.txt', json_encode($orderStatus));
