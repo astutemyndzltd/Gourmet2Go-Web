@@ -81,7 +81,7 @@
   let ddlOrderStatus = $('#order_status_id');
 
   function onWindowLoad() {
-    $(ddlOrderStatus).on('select2:select', e => alert(e.params.data));
+    $(ddlOrderStatus).on('select2:select', e => console.log(e.params.data));
   }
 
   $(window).on('load', onWindowLoad);
