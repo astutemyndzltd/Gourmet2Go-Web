@@ -242,7 +242,7 @@ class OrderController extends Controller
         $allOrderStatus = $orderStatus;
         $orderStatus = [];
 
-        echo json_encode($allOrderStatus);
+        echo $allOrderStatus;
 
         foreach ($allOrderStatus as $status) {
 
