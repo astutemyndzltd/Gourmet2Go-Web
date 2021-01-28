@@ -253,8 +253,7 @@ class OrderController extends Controller
                 $orderStatus->$id = $status;
 
                 if ($id != 5) {
-                    $next = next($allOrderStatus);
-                    $id++;
+                    $next = $allOrderStatus[$id++];
 
                     /*if ($id == 4 && $order->order_type == 'Pickup') {
                         $id++;
