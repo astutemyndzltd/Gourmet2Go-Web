@@ -1,4 +1,5 @@
 <?php
+
 /**
  * File name: OrderController.php
  * Last modified: 2020.06.11 at 16:10:52
@@ -55,9 +56,14 @@ class OrderController extends Controller
     /** @var  PaymentRepository */
     private $paymentRepository;
 
-    public function __construct(OrderRepository $orderRepo, CustomFieldRepository $customFieldRepo, UserRepository $userRepo
-        , OrderStatusRepository $orderStatusRepo, NotificationRepository $notificationRepo, PaymentRepository $paymentRepo)
-    {
+    public function __construct(
+        OrderRepository $orderRepo,
+        CustomFieldRepository $customFieldRepo,
+        UserRepository $userRepo,
+        OrderStatusRepository $orderStatusRepo,
+        NotificationRepository $notificationRepo,
+        PaymentRepository $paymentRepo
+    ) {
         parent::__construct();
         $this->orderRepository = $orderRepo;
         $this->customFieldRepository = $customFieldRepo;
@@ -115,7 +121,6 @@ class OrderController extends Controller
         try {
             $order = $this->orderRepository->create($input);
             $order->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
-
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
@@ -162,56 +167,54 @@ class OrderController extends Controller
 
 
         /*********** ADDING NECESSARY DATA FOR RECEIPT ********/
-        
+
         $orderDetails = [];
         $orderDetails['id'] = $order->id;
         $orderDetails['hint'] = $order->hint;
         $orderDetails['order_type'] = $order->order_type;
         $orderDetails['delivery_address'] = $order->deliveryAddress ? $order->deliveryAddress->address : null;
-		$orderDetails['subtotal'] = $subtotal;
-		$orderDetails['tax'] = $order['tax'];
-		$orderDetails['tax_amount'] = $taxAmount;
-		$orderDetails['delivery_fee'] = $order['delivery_fee'];
-		$orderDetails['total'] = $total;
-		$orderDetails['restaurant_name'] = $order->foodOrders[0]->food->restaurant->name;
-		$orderDetails['driver_name'] = $order->driver ? $order->driver->name : null;
-		$orderDetails['customer_name'] = $order->user->name;
-		$orderDetails['customer_phone'] = $order->user->custom_fields['phone'] ? $order->user->custom_fields['phone']['view'] : null;
+        $orderDetails['subtotal'] = $subtotal;
+        $orderDetails['tax'] = $order['tax'];
+        $orderDetails['tax_amount'] = $taxAmount;
+        $orderDetails['delivery_fee'] = $order['delivery_fee'];
+        $orderDetails['total'] = $total;
+        $orderDetails['restaurant_name'] = $order->foodOrders[0]->food->restaurant->name;
+        $orderDetails['driver_name'] = $order->driver ? $order->driver->name : null;
+        $orderDetails['customer_name'] = $order->user->name;
+        $orderDetails['customer_phone'] = $order->user->custom_fields['phone'] ? $order->user->custom_fields['phone']['view'] : null;
         $orderDetails['payment_method'] = $order->payment->method;
         $orderDetails['order_note'] = $order->note;
         $orderDetails['preorder_info'] = $order->preorder_info;
-		
-		$foodCategories = [];
-		
-		foreach ($order->foodOrders as $foodOrder) {
-			$food = $foodOrder->food;
-			$category = $food->category;
-			
-			if(!array_key_exists($category->id, $foodCategories)) {
-				$foodCategories[$category->id] = ['name' => $category->name, 'foods' => [] ];
-			}
-				
-			$foodStrict = ['name' => $food->name, 'price' => $foodOrder->price, 'quantity' => $foodOrder->quantity, 'extras'=> []];
-											
-			for($i=0; $i<count($foodOrder->extras); $i++) 
-			{
-				$name = $foodOrder->extras[$i]->name;
-				$price = $foodOrder->extras[$i]->price;
-				$extra = ['name' => $name, 'price' => $price];
-				array_push($foodStrict['extras'], $extra);
-			}
-			
-			array_push($foodCategories[$category->id]['foods'], $foodStrict);	
-			
-		}
-		
-		$orderDetails['food_categories'] = array_values($foodCategories);
-						
+
+        $foodCategories = [];
+
+        foreach ($order->foodOrders as $foodOrder) {
+            $food = $foodOrder->food;
+            $category = $food->category;
+
+            if (!array_key_exists($category->id, $foodCategories)) {
+                $foodCategories[$category->id] = ['name' => $category->name, 'foods' => []];
+            }
+
+            $foodStrict = ['name' => $food->name, 'price' => $foodOrder->price, 'quantity' => $foodOrder->quantity, 'extras' => []];
+
+            for ($i = 0; $i < count($foodOrder->extras); $i++) {
+                $name = $foodOrder->extras[$i]->name;
+                $price = $foodOrder->extras[$i]->price;
+                $extra = ['name' => $name, 'price' => $price];
+                array_push($foodStrict['extras'], $extra);
+            }
+
+            array_push($foodCategories[$category->id]['foods'], $foodStrict);
+        }
+
+        $orderDetails['food_categories'] = array_values($foodCategories);
+
         //file_put_contents('order.txt', json_encode($order->payment)); 
-        
+
         /*****************************************************/
 
-        return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal,"taxAmount" => $taxAmount, "orderDetails" => $orderDetails]);
+        return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal, "taxAmount" => $taxAmount, "orderDetails" => $orderDetails]);
     }
 
     /**
@@ -242,22 +245,21 @@ class OrderController extends Controller
         $allOrderStatus = $orderStatus;
         $orderStatus = [];
 
-        echo $allOrderStatus;
+        foreach ($allOrderStatus as $id => $status) {
 
-        foreach ($allOrderStatus as $status) {
-
-            if ($status['id'] == $order->orderStatus->id) {
-                array_push($orderStatus, $status);
+            if ($id == $order->orderStatus->id) {
+                array_push($orderStatus, [$id => $status]);
             }
 
-            if ($status['id'] != 5) {
-                $next = next($orderStatus);
-                
-                if ($next['id'] == 4 && $order->order_type == 'Pickup') {
-                    $next = next($orderStatus);
+            if ($id != 5) {
+
+                $next = next($allOrderStatus);
+
+                if (key($allOrderStatus) == 4 && $order->order_type == 'Pickup') {
+                    $next = next($allOrderStatus);
                 }
 
-                array_push($orderStatus, $next);
+                array_push($orderStatus, [key($allOrderStatus) => $next]);
                 break;
             }
         }
@@ -308,7 +310,7 @@ class OrderController extends Controller
 
                 if (isset($input['driver_id']) && ($input['driver_id'] != $oldOrder['driver_id'])) {
                     $driver = $this->userRepository->findWithoutFail($input['driver_id']);
-                    
+
                     if (!empty($driver)) {
                         Notification::send([$driver], new AssignedOrder($order));
                     }
@@ -358,8 +360,6 @@ class OrderController extends Controller
             $this->orderRepository->delete($id);
 
             Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.order')]));
-
-
         } else {
             Flash::warning('This is only demo app you can\'t change this section ');
         }
