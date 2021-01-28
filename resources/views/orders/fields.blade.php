@@ -45,7 +45,7 @@
     </div>
 
     <!-- Status Lasts For Field -->
-    <div class="form-group row ">
+    <div class="form-group row status-duration-container">
         {!! Form::label('status_duration', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
 

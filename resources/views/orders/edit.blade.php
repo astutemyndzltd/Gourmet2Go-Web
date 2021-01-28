@@ -73,10 +73,11 @@
 <script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
 {{--dropzone--}}
 <script src="{{asset('plugins/dropzone/dropzone.js')}}"></script>
+
 <script type="text/javascript">
   Dropzone.autoDiscover = false;
-  var dropzoneFields = [];
-  //$(window).on('load', () => $('#user_id').select2("enable", false));
-  //$('button.btn.btn-primary').on('click', () => $('#hdnUserId').val($('#user_id').val()));
+  let dropzoneFields = [];
+  let orderType = '{{ $order->order_type }}';
+  let divStatusDurationContainer = $('.status-duration-container');
 </script>
 @endpush
