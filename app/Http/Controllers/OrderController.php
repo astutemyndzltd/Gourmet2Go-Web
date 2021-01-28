@@ -239,12 +239,12 @@ class OrderController extends Controller
         $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
-        echo json_encode($orderStatus);
-
         $allOrderStatus = $orderStatus;
         $orderStatus = [];
 
         foreach ($allOrderStatus as $status) {
+
+            echo($status);
 
             if ($status['id'] == $order->orderStatus->id) {
                 array_push($orderStatus, $status);
