@@ -238,7 +238,26 @@ class OrderController extends Controller
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
         $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
+        $allOrderStatus = $orderStatus;
+        $orderStatus = [];
 
+        foreach ($allOrderStatus as $status) {
+
+            if ($status->id == $order->orderStatus->id) {
+                array_push($orderStatus, $status);
+            }
+
+            if ($status->id != 5) {
+                $next = next($orderStatus);
+                
+                if ($next->id == 4 && $order->order_type == 'Pickup') {
+                    $next = next($orderStatus);
+                }
+
+                array_push($orderStatus, $next);
+                break;
+            }
+        }
 
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
