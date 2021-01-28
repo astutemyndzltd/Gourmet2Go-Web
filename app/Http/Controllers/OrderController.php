@@ -247,9 +247,11 @@ class OrderController extends Controller
 
         foreach ($allOrderStatus as $id => $status) {
 
+            array_push($orderStatus, [$id => $status]);
+
             if ($id == $order->orderStatus->id) {
 
-                array_push($orderStatus, [$id => $status]);
+                //array_push($orderStatus, [$id => $status]);
 
                 /*if ($id != 5) {
 
