@@ -78,9 +78,9 @@
   Dropzone.autoDiscover = false;
 
   let dropzoneFields = [];
-  let ddlStatusDuration = $('#status_duration');
+  let ddlOrderStatus = $('#order_status_id');
 
-  $(ddlStatusDuration).on('select2:select', function(e) {
+  $(ddlOrderStatus).on('select2:select', function(e) {
     alert(e.params.data);
   });
 
