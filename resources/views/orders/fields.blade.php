@@ -46,7 +46,7 @@
 
     <!-- Status Lasts For Field -->
     <?php 
-        $status = $order->order_status->status;
+        $status = $order->orderStatus->status;
         $display = $status == 'Preparing' || $status == 'On the Way' ? 'block' : 'none';
     ?>
 
