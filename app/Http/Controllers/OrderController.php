@@ -242,9 +242,9 @@ class OrderController extends Controller
         $allOrderStatus = $orderStatus;
         $orderStatus = [];
 
-        foreach ($allOrderStatus as $status) {
+        echo json_encode($orderStatus);
 
-            echo($status);
+        foreach ($allOrderStatus as $status) {
 
             if ($status['id'] == $order->orderStatus->id) {
                 array_push($orderStatus, $status);
