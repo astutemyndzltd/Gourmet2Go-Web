@@ -80,10 +80,11 @@
   let dropzoneFields = [];
   let ddlOrderStatus = $('#order_status_id');
 
-  $(ddlOrderStatus).on('select2:select', function(e) {
-    alert(e.params.data);
-  });
+  function onWindowLoad() {
+    $(ddlOrderStatus).on('select2:select', e => alert(e.params.data));
+  }
 
+  $(window).on('load', onWindowLoad);
 
 </script>
 @endpush
