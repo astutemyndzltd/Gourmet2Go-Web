@@ -238,6 +238,9 @@ class OrderController extends Controller
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
         $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
+
+        echo json_encode($orderStatus);
+
         $allOrderStatus = $orderStatus;
         $orderStatus = [];
 
