@@ -243,14 +243,14 @@ class OrderController extends Controller
 
         foreach ($allOrderStatus as $status) {
 
-            if ($status->id == $order->orderStatus->id) {
+            if ($status['id'] == $order->orderStatus->id) {
                 array_push($orderStatus, $status);
             }
 
-            if ($status->id != 5) {
+            if ($status['id'] != 5) {
                 $next = next($orderStatus);
                 
-                if ($next->id == 4 && $order->order_type == 'Pickup') {
+                if ($next['id'] == 4 && $order->order_type == 'Pickup') {
                     $next = next($orderStatus);
                 }
 
