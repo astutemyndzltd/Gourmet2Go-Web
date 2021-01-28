@@ -50,7 +50,7 @@
         <div class="col-9">
 
             <?php
-                $range = range(5, 65, 5);
+                $range = range(5, 60, 5);
                 $duration = new stdClass();
                 foreach($range as $value) $duration->$value = $value . ' min';
             ?>
