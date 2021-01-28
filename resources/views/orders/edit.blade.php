@@ -77,8 +77,5 @@
 <script type="text/javascript">
   Dropzone.autoDiscover = false;
   let dropzoneFields = [];
-  let orderType = '{{ $order->order_type }}';
-  let divStatusDurationContainer = $('.status-duration-container');
-  let name = 'anik';
 </script>
 @endpush
