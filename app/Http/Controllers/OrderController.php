@@ -248,18 +248,18 @@ class OrderController extends Controller
         foreach ($allOrderStatus as $id => $status) {
 
             if ($id == $order->orderStatus->id) {
-                array_push($orderStatus, [$id => $status]);
+                array_push($orderStatus, $allOrderStatus[$id]);
             }
 
             if ($id != 5) {
 
-                $next = next($allOrderStatus);
+                next($allOrderStatus);
 
                 if (key($allOrderStatus) == 4 && $order->order_type == 'Pickup') {
-                    $next = next($allOrderStatus);
+                    next($allOrderStatus);
                 }
 
-                array_push($orderStatus, [key($allOrderStatus) => $next]);
+                array_push($orderStatus, $allOrderStatus[key($allOrderStatus)]);
                 break;
             }
         }
