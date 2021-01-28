@@ -44,8 +44,17 @@
         </div>
     </div>
 
-    <!-- Payment Status Field -->
+    <!-- Status Lasts For Field -->
+    <div class="form-group row ">
+        {!! Form::label('order_status_id', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">          
+            {!! Form::select('order_status_id', range(5, 50, 10), null, ['class' => 'select2 form-control']) !!}
+            <div class="form-text text-muted">Estimated time to complete the phase</div>
+        </div>
+    </div>
 
+
+    <!-- Payment Status Field -->
     <input type="hidden" name="status" value="{{ $order->payment->status }}">
 
     {{-- <div class="form-group row ">
