@@ -52,7 +52,7 @@
             <?php
                 $range = range(5, 65, 5);
                 $duration = new stdClass();
-                foreach($range as $value) $duration->$value = $value + ' min';
+                foreach($range as $value) $duration->$value = $value . ' min';
             ?>
 
             {!! Form::select('order_status_id', $duration, null, ['class' => 'select2 form-control']) !!}
