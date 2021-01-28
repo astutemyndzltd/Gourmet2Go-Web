@@ -251,7 +251,7 @@ class OrderController extends Controller
 
                 array_push($orderStatus, [$id => $status]);
 
-                if ($id != 5) {
+                /*if ($id != 5) {
 
                     $nextStatus = next($allOrderStatus);
     
@@ -261,7 +261,7 @@ class OrderController extends Controller
     
                     array_push($orderStatus, [key($allOrderStatus) => $nextStatus]);
                     break;
-                }
+                }*/
             }
 
             
