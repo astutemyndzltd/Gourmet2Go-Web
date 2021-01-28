@@ -247,9 +247,9 @@ class OrderController extends Controller
 
         foreach ($allOrderStatus as $id => $status) {
 
-            array_push($orderStatus, [$id => $status]);
+            //array_push($orderStatus, [$id => $status]);
 
-            if ($id == $order->orderStatus->id) {
+            /*if ($id == $order->orderStatus->id) {
 
                 //array_push($orderStatus, [$id => $status]);
 
@@ -263,11 +263,11 @@ class OrderController extends Controller
     
                     array_push($orderStatus, [key($allOrderStatus) => $nextStatus]);
                     break;
-                }*/
-            }            
+                }
+            }*/            
         }
 
-        file_put_contents('order.txt', json_encode($orderStatus));
+        file_put_contents('order.txt', json_encode($allOrderStatus));
 
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
