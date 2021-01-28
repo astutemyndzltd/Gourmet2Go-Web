@@ -47,8 +47,15 @@
     <!-- Status Lasts For Field -->
     <div class="form-group row ">
         {!! Form::label('order_status_id', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">          
-            {!! Form::select('order_status_id', range(5, 50, 10), null, ['class' => 'select2 form-control']) !!}
+        <div class="col-9">
+
+            <?php
+                $range = range(5, 65, 5);
+                $duration = new stdClass();
+                foreach($range as $value) $duration->$value = $value + ' min';
+            ?>
+
+            {!! Form::select('order_status_id', $duration, null, ['class' => 'select2 form-control']) !!}
             <div class="form-text text-muted">Estimated time to complete the phase</div>
         </div>
     </div>
