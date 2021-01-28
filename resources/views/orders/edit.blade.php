@@ -76,6 +76,14 @@
 
 <script type="text/javascript">
   Dropzone.autoDiscover = false;
+
   let dropzoneFields = [];
+  let ddlStatusDuration = $('#status_duration');
+
+  $(ddlStatusDuration).on('select2:select', function(e) {
+    alert(e.params.data);
+  });
+
+
 </script>
 @endpush

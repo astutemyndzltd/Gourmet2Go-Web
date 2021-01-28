@@ -129,11 +129,10 @@
     </div> --}}
 
     <!-- Hint Field -->
-    <div class="form-group row ">
+    <div class="form-group row">
         {!! Form::label('hint', trans("lang.order_hint"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::textarea('hint', null, ['class' => 'form-control','placeholder'=>
-             trans("lang.order_hint_placeholder")  ]) !!}
+            {!! Form::textarea('hint', null, ['class' => 'form-control', 'placeholder' => trans("lang.order_hint_placeholder")  ]) !!}
             <div class="form-text text-muted">{{ trans("lang.order_hint_help") }}</div>
         </div>
     </div>
