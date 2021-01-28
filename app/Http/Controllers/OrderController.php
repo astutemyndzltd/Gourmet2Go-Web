@@ -256,10 +256,10 @@ class OrderController extends Controller
                     $next = next($allOrderStatus);
                     $id++;
 
-                    if ($id == 4 && $order->order_type == 'Pickup') {
+                    /*if ($id == 4 && $order->order_type == 'Pickup') {
                         $id++;
                         $next = next($allOrderStatus);
-                    }
+                    }*/
 
                     $orderStatus->$id = $next;
                     break;
