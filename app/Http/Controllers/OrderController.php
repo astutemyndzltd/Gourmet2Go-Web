@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Prettus\Validator\Exceptions\ValidatorException;
+use stdClass;
 
 class OrderController extends Controller
 {
@@ -243,13 +244,13 @@ class OrderController extends Controller
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
         $allOrderStatus = $orderStatus;
-        $orderStatus = [];
+        $orderStatus = new stdClass();
 
         foreach ($allOrderStatus as $id => $status) {
 
             if ($id == $order->orderStatus->id) {
 
-                array_push($orderStatus, [$id => $status]);
+                $orderStatus->$id = $status;
 
                 if ($id != 5) {
                     $next = next($allOrderStatus);
@@ -260,13 +261,11 @@ class OrderController extends Controller
                         $next = next($allOrderStatus);
                     }
 
-                    array_push($orderStatus, [$id => $next]);
+                    $orderStatus->$id = $next;
                     break;
                 }
             }    
         }
-
-        $orderStatus = (object) $orderStatus;
 
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
