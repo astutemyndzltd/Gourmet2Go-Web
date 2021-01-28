@@ -247,27 +247,26 @@ class OrderController extends Controller
 
         foreach ($allOrderStatus as $id => $status) {
 
-            //array_push($orderStatus, [$id => $status]);
+            if ($id == $order->orderStatus->id) {
 
-            /*if ($id == $order->orderStatus->id) {
+                array_push($orderStatus, [$id => $status]);
 
-                //array_push($orderStatus, [$id => $status]);
+                if ($id != 5) {
+                    $next = next($allOrderStatus);
+                    $id++;
 
-                /*if ($id != 5) {
-
-                    $nextStatus = next($allOrderStatus);
-    
-                    if (key($allOrderStatus) == 4 && $order->order_type == 'Pickup') {
-                        $nextStatus = next($allOrderStatus);
+                    if ($id == 4 && $order->order_type == 'Pickup') {
+                        $id++;
+                        $next = next($allOrderStatus);
                     }
-    
-                    array_push($orderStatus, [key($allOrderStatus) => $nextStatus]);
+
+                    array_push($orderStatus, [$id => $next]);
                     break;
                 }
-            }*/            
+            }    
         }
 
-        file_put_contents('order.txt', json_encode($allOrderStatus));
+        $orderStatus = (object) $orderStatus;
 
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
