@@ -249,20 +249,17 @@ class OrderController extends Controller
 
             if ($id == $order->orderStatus->id) {
 
-                echo $id;
-
-
-                array_push($orderStatus, $allOrderStatus[$id]);
+                array_push($orderStatus, [$id => $status]);
 
                 if ($id != 5) {
 
-                    next($allOrderStatus);
+                    $nextStatus = next($allOrderStatus);
     
                     if (key($allOrderStatus) == 4 && $order->order_type == 'Pickup') {
-                        next($allOrderStatus);
+                        $nextStatus = next($allOrderStatus);
                     }
     
-                    array_push($orderStatus, $allOrderStatus[key($allOrderStatus)]);
+                    array_push($orderStatus, [key($allOrderStatus) => $nextStatus]);
                     break;
                 }
             }
