@@ -30,9 +30,9 @@
         submarine: ['http://i.cloudup.com/r4ZENSF0Hu.m4a', 'http://i.cloudup.com/2OPb5OYAI2.ogg'],
         tink: ['http://i.cloudup.com/nCtoNq3kJN.m4a', 'http://i.cloudup.com/SNi1RX8iwb.ogg'],
         eventually: [
-          'https://app.gourmet2go.co.uk/sounds/eventually-590.mp3',
-          'https://app.gourmet2go.co.uk/sounds/eventually-590.m4r',
-          'https://app.gourmet2go.co.uk/sounds/eventually-590.ogg'
+          'https://app.gourmet2go.uk/sounds/eventually-590.mp3',
+          'https://app.gourmet2go.uk/sounds/eventually-590.m4r',
+          'https://app.gourmet2go.uk/sounds/eventually-590.ogg'
         ]
       };
     }, {}], 3: [function (require, module, exports) {
