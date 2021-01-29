@@ -309,11 +309,11 @@ class OrderController extends Controller
 
                     case 2:
                     case 4:
-                        $order->statusDetails()->updateOrInsert(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'], 'updated_at' => DB::raw('CURRENT_TIMESTAMP') ]);
+                        $order->statusDetails()->updateOrCreate(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
                         break;
 
                     default:
-                        $order->statusDetails()->updateOrInsert(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => null, 'updated_at' => DB::raw('CURRENT_TIMESTAMP') ]);
+                        $order->statusDetails()->updateOrCreate(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => null  ]);
                         break;
                 }
 
