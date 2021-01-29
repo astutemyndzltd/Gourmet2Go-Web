@@ -48,6 +48,8 @@
     <?php 
         $status = $order->orderStatus->status;
         $display = $status == 'Preparing' || $status == 'On the Way' ? 'flex' : 'none';
+        $lastsFor = isset($order->statusDetails) ? $order->statusDetails->lasts_for : null;
+        $readonly = $status == 'Preparing' || $status == 'On The Way';
     ?>
 
     <div class="form-group row status-duration-container" style="display:{{ $display }};">
@@ -60,7 +62,7 @@
                 foreach($range as $value) $duration->$value = $value . ' minutes';
             ?>
 
-            {!! Form::select('status_duration', $duration, null, ['class' => 'select2 form-control']) !!}
+            {!! Form::select('status_duration', $lastsFor, ['class' => 'select2 form-control', 'readonly' => $readonly ]) !!}
             <div class="form-text text-muted">Estimated time to complete the phase</div>
 
         </div>
