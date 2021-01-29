@@ -100,9 +100,11 @@ class Order extends Model
     public function getCustomFieldsAttribute()
     {
         $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
+        
         if (!$hasCustomField){
             return [];
         }
+
         $array = $this->customFieldsValues()
             ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
             ->where('custom_fields.in_table','=',true)

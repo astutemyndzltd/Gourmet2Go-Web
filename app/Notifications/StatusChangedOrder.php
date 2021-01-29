@@ -23,18 +23,16 @@ class StatusChangedOrder extends Notification
      * @var Order
      */
     private $order;
-    private $orderStatusDetails;
-
+  
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Order $order, OrderStatusDetails $orderStatusDetails)
+    public function __construct(Order $order)
     {
         //
         $this->order = $order;
-        $this->orderStatusDetails = $orderStatusDetails;
     }
 
     /**
@@ -78,9 +76,7 @@ class StatusChangedOrder extends Notification
             'sound' => 'default',
             'id' => 'orders',
             'status' => 'done',
-            'message' => $notification,
-            'order_status' => $this->order->orderStatus->status,
-            'status_duration' => isset($this->orderStatusDetails) ? $this->orderStatusDetails->lasts_for : null
+            'message' => $notification
         ];
 
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);
