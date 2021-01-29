@@ -306,14 +306,14 @@ class OrderController extends Controller
             if ($order->order_status_id != $oldOrder->order_status_id) {
                 
                 switch($order->order_status_id) {
-                    
+
                     case 2:
-                    case 4:    
-                        $order->statusDetails()->updateOrInsert(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
+                    case 4:
+                        $order->statusDetails()->updateOrInsert(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'], 'updated_at' => \Carbon\Carbon::now() ]);
                         break;
 
                     default:
-                        $order->statusDetails()->updateOrInsert(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
+                        $order->statusDetails()->updateOrInsert(['order_id' => $order->id], ['order_status_id' => $order->order_status_id, 'lasts_for' => null, 'updated_at' => \Carbon\Carbon::now() ]);
                         break;
                 }
 
