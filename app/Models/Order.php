@@ -171,7 +171,7 @@ class Order extends Model
 
     public function statusDetails() 
     {
-        return $this->hasOne(\App\Models\OrderStatusDetails::class, 'order_id', 'id');
+        return $this->hasOne(\App\Models\OrderStatusDetails::class);
     }
 
     public function getStatusDetailsAttribute() 
