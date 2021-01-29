@@ -308,17 +308,17 @@ class OrderController extends Controller
                 switch($order->order_status_id) {
                     case 2:
                     case 4:    
-                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
+                        $order = $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
                         break;
 
                     default:
-                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
+                        $order = $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
                         break;
                 }
 
             }
 
-            file_put_contents('order.txt', json_encode($order->statusDetails));
+            file_put_contents('order.txt', json_encode($order));
             
             if (setting('enable_notifications', false)) {
 
@@ -335,9 +335,7 @@ class OrderController extends Controller
                 }
             }
 
-            $this->paymentRepository->update([
-                "status" => $input['status'],
-            ], $order['payment_id']);
+            $this->paymentRepository->update([ "status" => $input['status'],], $order['payment_id']);
             //dd($input['status']);
 
             event(new OrderChangedEvent($oldStatus, $order));
