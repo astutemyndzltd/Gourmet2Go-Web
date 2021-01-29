@@ -70,7 +70,7 @@ class Order extends Model
         'preorder_info' => 'string'
     ];
 
-    
+
     /**
      * Validation rules
      *
@@ -171,7 +171,7 @@ class Order extends Model
 
     public function statusDetails() 
     {
-        return $this->hasOne(\App\Models\OrderStatusDetails::class);
+        return $this->hasOne(\App\Models\OrderStatusDetails::class, 'order_id', 'id');
     }
 
     public function getStatusDetailsAttribute() 

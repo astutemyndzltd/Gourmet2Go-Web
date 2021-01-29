@@ -26,12 +26,7 @@ class OrderStatusDetails extends Model
     {
         return $this->belongsTo(\App\Models\Order::class);
     }
-
-    public function durationLeft() 
-    {
-        return (time() - $this->updated_at) /60 / 1000;
-    }
-
+    
 }
 
 ?>
