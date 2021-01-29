@@ -46,8 +46,7 @@ class Order extends Model
         'driver_id',
         'order_type',
         'note',
-        'preorder_info',
-        'status_details'
+        'preorder_info'
     ];
 
     /**
@@ -90,7 +89,7 @@ class Order extends Model
      */
     protected $appends = [
         'custom_fields',
-        
+        'status_details'
     ];
 
     public function customFieldsValues()
