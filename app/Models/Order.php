@@ -9,6 +9,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
+use Carbon\Carbon;
 
 /**
  * Class Order
@@ -89,6 +90,7 @@ class Order extends Model
      * @var array
      */
     protected $appends = [
+        'status_duration_left',
         'custom_fields',
     ];
 
@@ -174,4 +176,18 @@ class Order extends Model
         return $this->hasOne(\App\Models\OrderStatusDetails::class, 'order_id', 'id');
     }
     
+    public function getStatusDurationLeftAttribute() 
+    {
+        if (isset($this->statusDetails->lasts_for))  
+        {
+            $lastsFor = $this->statusDetails->lasts_for;
+            $startedAt = new Carbon($this->statusDetails->updated_at);
+            $elapsed = now()->diffInMinutes($startedAt, true);
+            return $lastsFor - $elapsed;
+        }
+        
+        return null;
+        
+    }
+
 }
