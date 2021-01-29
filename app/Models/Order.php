@@ -176,7 +176,7 @@ class Order extends Model
 
     public function getStatusDetailsAttribute() 
     {
-        return $this->statusDetails();
+        return $this->statusDetails->all();
     }
     
 }
