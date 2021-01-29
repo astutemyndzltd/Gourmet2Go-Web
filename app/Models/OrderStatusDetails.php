@@ -13,7 +13,6 @@ class OrderStatusDetails extends Model
         'order_id',
         'order_status_id',
         'lasts_for',
-        'duration_left'
     ];
 
     protected $casts = [
