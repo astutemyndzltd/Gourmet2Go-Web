@@ -302,18 +302,17 @@ class OrderController extends Controller
         try {
 
             $order = $this->orderRepository->update($input, $id);
-            $orderStatusDetails = null;
 
             if ($order->order_status_id != $oldOrder->order_status_id) {
                 
                 switch($order->order_status_id) {
                     case 2:
                     case 4:    
-                        $orderStatusDetails = $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
+                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
                         break;
 
                     default:
-                        $orderStatusDetails = $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
+                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
                         break;
                 }
 
@@ -322,14 +321,14 @@ class OrderController extends Controller
             if (setting('enable_notifications', false)) {
 
                 if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
-                    Notification::send([$order->user], new StatusChangedOrder($order, $orderStatusDetails));
+                    Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 
                 if (isset($input['driver_id']) && ($input['driver_id'] != $oldOrder['driver_id'])) {
                     $driver = $this->userRepository->findWithoutFail($input['driver_id']);
 
                     if (!empty($driver)) {
-                        Notification::send([$driver], new AssignedOrder($order, $orderStatusDetails));
+                        Notification::send([$driver], new AssignedOrder($order));
                     }
                 }
             }
