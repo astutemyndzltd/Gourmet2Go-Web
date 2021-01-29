@@ -49,7 +49,7 @@
         $status = $order->orderStatus->status;
         $display = $status == 'Preparing' || $status == 'On the Way' ? 'flex' : 'none';
         $lastsFor = isset($order->statusDetails) ? $order->statusDetails->lasts_for : null;
-        $disabled = $status == 'Preparing' || $status == 'On The Way';
+        $disabled = $status == 'Preparing' || $status == 'On the Way';
 
         $range = range(5, 60, 5);
         $duration = new stdClass();
