@@ -59,7 +59,7 @@
     <div class="form-group row status-duration-container" style="display:{{ $display }};">
         {!! Form::label('status_duration', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::select('status_duration', $duration, $lastsFor, ['class' => 'select2 form-control', 'disabled' => $readonly ]) !!}
+            {!! Form::select('status_duration', $duration, $lastsFor, ['class' => 'select2 form-control', 'disabled' => $disabled ]) !!}
             <div class="form-text text-muted">Estimated time to complete the phase</div>
 
         </div>
