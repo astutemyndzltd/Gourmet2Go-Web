@@ -56,8 +56,6 @@
         foreach($range as $value) $duration->$value = $value . ' minutes';
     ?>
 
-    {{-- <input type="hidden" value="{{ json_encode($order->statusDetails->order_id) }}"> --}}
-
     <div class="form-group row status-duration-container" style="display:{{ $display }};">
         {!! Form::label('status_duration', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
@@ -65,7 +63,6 @@
             <div class="form-text text-muted">Estimated time to complete the phase</div>
         </div>
     </div>
-
 
     <!-- Payment Status Field -->
     <input type="hidden" name="status" value="{{ $order->payment->status }}">
