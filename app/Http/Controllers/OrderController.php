@@ -317,6 +317,8 @@ class OrderController extends Controller
                 }
 
             }
+
+            file_put_contents('order.txt', json_encode($order));
             
             if (setting('enable_notifications', false)) {
 

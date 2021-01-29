@@ -61,7 +61,6 @@
         <div class="col-9">
             {!! Form::select('status_duration', $duration, $lastsFor, ['class' => 'select2 form-control', 'disabled' => $disabled ]) !!}
             <div class="form-text text-muted">Estimated time to complete the phase</div>
-
         </div>
     </div>
 
