@@ -329,7 +329,7 @@ class OrderController extends Controller
                     $driver = $this->userRepository->findWithoutFail($input['driver_id']);
 
                     if (!empty($driver)) {
-                        Notification::send([$driver], new AssignedOrder($order));
+                        Notification::send([$driver], new AssignedOrder($order, $orderStatusDetails));
                     }
                 }
             }
