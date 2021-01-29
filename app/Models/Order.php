@@ -70,6 +70,7 @@ class Order extends Model
         'preorder_info' => 'string'
     ];
 
+    
     /**
      * Validation rules
      *
@@ -89,7 +90,6 @@ class Order extends Model
      */
     protected $appends = [
         'custom_fields',
-        'status_details'
     ];
 
     public function customFieldsValues()
