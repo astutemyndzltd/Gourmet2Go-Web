@@ -47,7 +47,7 @@ class Order extends Model
         'order_type',
         'note',
         'preorder_info',
-        'status_details'
+        'statusDetails'
     ];
 
     /**
