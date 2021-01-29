@@ -6,6 +6,7 @@ use Eloquent as Model;
 class OrderStatusDetails extends Model 
 {   
     public $table = 'order_status_details';
+    public $timestamps = [ 'updated_at' ];
 
     public $fillable = [
         'order_id',

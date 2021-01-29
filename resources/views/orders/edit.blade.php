@@ -82,11 +82,14 @@
   let divStatusDuration = $('div.status-duration-container');
 
   function onWindowLoad() {
-    $(ddlOrderStatus).on('select2:select', e => {
+
+    let ddlStatusChangeHandler = function(e) {
       let { data } = e.params;
       if (data.id == 2 || data.id == 4) $(divStatusDuration).slideDown();
       else $(divStatusDuration).slideUp();
-    });
+    };
+
+    $(ddlOrderStatus).on('select2:select', ddlStatusChangeHandler);
   }
 
   $(window).on('load', onWindowLoad);

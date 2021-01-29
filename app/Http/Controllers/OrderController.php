@@ -303,6 +303,21 @@ class OrderController extends Controller
 
             $order = $this->orderRepository->update($input, $id);
 
+            if ($order->order_status_id != $oldOrder->order_status_id) {
+                
+                switch($order->order_status_id) {
+                    case 2:
+                    case 4:    
+                        $order->statusDetails()->upsert(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
+                        break;
+
+                    default:
+                        $order->statusDetails()->upsert(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
+                        break;
+                }
+
+            }
+            
             if (setting('enable_notifications', false)) {
 
                 if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
