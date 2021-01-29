@@ -166,5 +166,10 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
     }
+
+    public function statusDetails() 
+    {
+        return $this->hasOne(\App\Models\OrderStatusDetails::class, 'order_id', 'id');
+    }
     
 }
