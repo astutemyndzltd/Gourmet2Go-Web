@@ -12,18 +12,25 @@ class OrderStatusDetails extends Model
     public $fillable = [
         'order_id',
         'order_status_id',
-        'lasts_for'
+        'lasts_for',
+        'duration_left'
     ];
 
     protected $casts = [
         'order_id' => 'integer',
         'order_status_id' => 'integer',
-        'lasts_for' => 'integer'
+        'lasts_for' => 'integer',
+        'updated_at' => 'timestamp'
     ];
 
     public function order() 
     {
         return $this->belongsTo(\App\Models\Order::class);
+    }
+
+    public function durationLeft() 
+    {
+        return (time() - $this->updated_at) /60 / 1000;
     }
 
 }

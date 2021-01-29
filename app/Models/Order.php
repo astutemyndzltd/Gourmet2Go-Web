@@ -46,7 +46,8 @@ class Order extends Model
         'driver_id',
         'order_type',
         'note',
-        'preorder_info'
+        'preorder_info',
+        'status_details'
     ];
 
     /**
