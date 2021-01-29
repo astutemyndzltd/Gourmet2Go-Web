@@ -57,7 +57,7 @@
             <?php
                 $range = range(5, 60, 5);
                 $duration = new stdClass();
-                foreach($range as $value) $duration->$value = $value . ' min';
+                foreach($range as $value) $duration->$value = $value . ' minutes';
             ?>
 
             {!! Form::select('status_duration', $duration, null, ['class' => 'select2 form-control']) !!}
