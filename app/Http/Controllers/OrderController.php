@@ -302,17 +302,18 @@ class OrderController extends Controller
         try {
 
             $order = $this->orderRepository->update($input, $id);
+            $orderStatusDetails = null;
 
             if ($order->order_status_id != $oldOrder->order_status_id) {
                 
                 switch($order->order_status_id) {
                     case 2:
                     case 4:    
-                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
+                        $orderStatusDetails = $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
                         break;
 
                     default:
-                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
+                        $orderStatusDetails = $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
                         break;
                 }
 
@@ -321,7 +322,7 @@ class OrderController extends Controller
             if (setting('enable_notifications', false)) {
 
                 if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
-                    Notification::send([$order->user], new StatusChangedOrder($order));
+                    Notification::send([$order->user], new StatusChangedOrder($order, $orderStatusDetails));
                 }
 
                 if (isset($input['driver_id']) && ($input['driver_id'] != $oldOrder['driver_id'])) {
@@ -339,10 +340,11 @@ class OrderController extends Controller
             event(new OrderChangedEvent($oldStatus, $order));
 
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
-                $order->customFieldsValues()
-                    ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
+                $order->customFieldsValues()->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
             }
-        } catch (ValidatorException $e) {
+
+        } 
+        catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 

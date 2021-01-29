@@ -10,6 +10,7 @@
 namespace App\Notifications;
 
 use App\Models\Order;
+use App\Models\OrderStatusDetails;
 use Benwilkins\FCM\FcmMessage;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -22,16 +23,18 @@ class StatusChangedOrder extends Notification
      * @var Order
      */
     private $order;
+    private $orderStatusDetails;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Order $order)
+    public function __construct(Order $order, OrderStatusDetails $orderStatusDetails)
     {
         //
         $this->order = $order;
+        $this->orderStatusDetails = $orderStatusDetails;
     }
 
     /**
@@ -62,19 +65,24 @@ class StatusChangedOrder extends Notification
     public function toFcm($notifiable)
     {
         $message = new FcmMessage();
+
         $notification = [
             'title' => trans('lang.notification_your_order', ['order_id' => $this->order->id, 'order_status' => $this->order->orderStatus->status]),
             'text' => $this->order->foodOrders[0]->food->restaurant->name,
             'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
 			'sound' => 'default'
         ];
+
         $data = [
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
             'sound' => 'default',
             'id' => 'orders',
             'status' => 'done',
             'message' => $notification,
+            'order_status' => $this->order->orderStatus->status,
+            'status_duration' => isset($this->orderStatusDetails) ? $this->orderStatusDetails->lasts_for : null
         ];
+
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);
 
         return $message;
