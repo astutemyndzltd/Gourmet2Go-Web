@@ -318,7 +318,7 @@ class OrderController extends Controller
 
             }
 
-            file_put_contents('order.txt', json_encode($order));
+            file_put_contents('order.txt', json_encode($order->statusDetails));
             
             if (setting('enable_notifications', false)) {
 
