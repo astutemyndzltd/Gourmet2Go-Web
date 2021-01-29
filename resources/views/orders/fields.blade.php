@@ -47,7 +47,7 @@
     <!-- Status Lasts For Field -->
     <?php 
         $status = $order->orderStatus->status;
-        $display = $status == 'Preparing' || $status == 'On the Way' ? 'block' : 'none';
+        $display = $status == 'Preparing' || $status == 'On the Way' ? 'flex' : 'none';
     ?>
 
     <div class="form-group row status-duration-container" style="display:{{ $display }};">
