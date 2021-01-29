@@ -56,7 +56,7 @@
         foreach($range as $value) $duration->$value = $value . ' minutes';
     ?>
 
-    <input type="hidden" value="{{ json_encode($order->statusDetails) }}">
+    <input type="hidden" value="{{ $lastsFor }}">
 
     <div class="form-group row status-duration-container" style="display:{{ $display }};">
         {!! Form::label('status_duration', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
