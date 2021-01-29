@@ -308,11 +308,11 @@ class OrderController extends Controller
                 switch($order->order_status_id) {
                     case 2:
                     case 4:    
-                        $order->statusDetails()->upsert(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
+                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
                         break;
 
                     default:
-                        $order->statusDetails()->upsert(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
+                        $order->statusDetails()->updateOrCreate(['order_status_id' => $order->order_status_id, 'lasts_for' => null ]);
                         break;
                 }
 
