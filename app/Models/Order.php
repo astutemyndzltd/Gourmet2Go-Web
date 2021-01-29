@@ -182,7 +182,7 @@ class Order extends Model
         {
             $lastsFor = $this->statusDetails->lasts_for;
             $startedAt = new Carbon($this->statusDetails->updated_at);
-            $elapsed = now()->diffInMinutes($startedAt, true);
+            $elapsed = now()->diffInSeconds($startedAt, true) / 60;
             return $lastsFor - $elapsed;
         }
         
