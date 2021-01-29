@@ -173,10 +173,5 @@ class Order extends Model
     {
         return $this->hasOne(\App\Models\OrderStatusDetails::class, 'order_id', 'id');
     }
-
-    public function getStatusDetailsAttribute() 
-    {
-        return $this->statusDetails();
-    }
     
 }
