@@ -58,6 +58,7 @@ class AssignedOrder extends Notification
     public function toFcm($notifiable)
     {
         $message = new FcmMessage();
+        
         $notification = [
             'title' => "Order #" . $this->order->id . " of " . $this->order->user->name ." has been assigned to you",
             'text'         => $this->order->foodOrders[0]->food->restaurant->name,
@@ -65,7 +66,7 @@ class AssignedOrder extends Notification
             'icon' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
 			'sound' => 'default'
         ];
-        
+
         $data = [
             'click_action' => "FLUTTER_NOTIFICATION_CLICK",
             'sound' => 'default',
