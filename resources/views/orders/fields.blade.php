@@ -48,7 +48,7 @@
     <?php 
         $status = $order->orderStatus->status;
         $display = $status == 'Preparing' || $status == 'On the Way' ? 'flex' : 'none';
-        //$lastsFor = isset($order->statusDetails) ? $order->statusDetails->lasts_for : null;
+        $lastsFor = isset($order->statusDetails->lasts_for) ? $order->statusDetails->lasts_for : null;
         $disabled = $status == 'Preparing' || $status == 'On the Way';
 
         $range = range(5, 60, 5);
@@ -61,7 +61,7 @@
     <div class="form-group row status-duration-container" style="display:{{ $display }};">
         {!! Form::label('status_duration', 'Estimated Time', ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
-            {!! Form::select('status_duration', $duration, null, ['class' => 'select2 form-control', 'disabled' => $disabled ]) !!}
+            {!! Form::select('status_duration', $duration, $lastsFor, ['class' => 'select2 form-control', 'disabled' => $disabled ]) !!}
             <div class="form-text text-muted">Estimated time to complete the phase</div>
         </div>
     </div>
