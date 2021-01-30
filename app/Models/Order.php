@@ -186,8 +186,7 @@ class Order extends Model
             return $lastsFor - $elapsed;
         }
         
-        return null;
-        
+        return null;      
     }
 
 }
