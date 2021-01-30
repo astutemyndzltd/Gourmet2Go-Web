@@ -76,7 +76,9 @@ class StatusChangedOrder extends Notification
             'sound' => 'default',
             'id' => 'orders',
             'status' => 'done',
-            'message' => $notification
+            'message' => $notification,
+            'order_status_id' => $this->order->order_status_id,
+            'status_duration_left' => $this->order->status_duration_left
         ];
 
         $message->content($notification)->data($data)->priority(FcmMessage::PRIORITY_HIGH);

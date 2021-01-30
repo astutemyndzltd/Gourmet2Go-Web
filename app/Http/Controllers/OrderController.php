@@ -308,23 +308,23 @@ class OrderController extends Controller
                 switch($order->order_status_id) {
 
                     case 2:
-                        $xyz = $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
+                        $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
                         break;
 
                     case 4:
-                        $xyz = $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ], $order->id);
+                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ], $order->id);
                         break;
 
                     default:
-                        $xyz = $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null ], $order->id);
+                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null ], $order->id);
                         break;
                 }
-
-                file_put_contents('order.txt', json_encode($xyz));
 
             }
             
             if (setting('enable_notifications', false)) {
+
+                $order = $order->fresh();
 
                 if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
                     Notification::send([$order->user], new StatusChangedOrder($order));
