@@ -308,17 +308,19 @@ class OrderController extends Controller
                 switch($order->order_status_id) {
 
                     case 2:
-                        $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
+                        $xyz = $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
                         break;
 
                     case 4:
-                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ], $order->id);
+                        $xyz = $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ], $order->id);
                         break;
 
                     default:
-                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null ], $order->id);
+                        $xyz = $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null ], $order->id);
                         break;
                 }
+
+                file_put_contents('order.txt', json_encode($xyz));
 
             }
             
