@@ -211,10 +211,6 @@ class OrderController extends Controller
 
         $orderDetails['food_categories'] = array_values($foodCategories);
 
-        //file_put_contents('order.txt', json_encode($order->payment)); 
-
-        /*****************************************************/
-
         return $foodOrderDataTable->render('orders.show', ["order" => $order, "total" => $total, "subtotal" => $subtotal, "taxAmount" => $taxAmount, "orderDetails" => $orderDetails]);
     }
 
@@ -384,6 +380,7 @@ class OrderController extends Controller
         } else {
             Flash::warning('This is only demo app you can\'t change this section ');
         }
+
         return redirect(route('orders.index'));
     }
 
