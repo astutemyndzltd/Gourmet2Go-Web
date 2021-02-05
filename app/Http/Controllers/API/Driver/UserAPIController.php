@@ -147,7 +147,6 @@ class UserAPIController extends Controller
                 'app_version' => '',
                 'enable_version' => '',
                 'distance_unit' => '',
-                'stripe_key' => ''
             ]
         );
 
@@ -155,7 +154,7 @@ class UserAPIController extends Controller
             return $this->sendError('Settings not found', 401);
         }
 
-        return $this->sendResponse('hello', 'Settings retrieved successfully');
+        return $this->sendResponse($settings, 'Settings retrieved successfully');
     }
 
     /**
