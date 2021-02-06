@@ -352,22 +352,45 @@ class OrderAPIController extends Controller
     public function update($id, Request $request)
     {
         $oldOrder = $this->orderRepository->findWithoutFail($id);
+
         if (empty($oldOrder)) {
             return $this->sendError('Order not found');
         }
+
         $oldStatus = $oldOrder->payment->status;
         $input = $request->all();
 
         try {
+
             $order = $this->orderRepository->update($input, $id);
 
-            if (isset($input['order_status_id']) && $input['order_status_id'] == 5 && !empty($order)) {
-                $this->paymentRepository->update(['status' => 'Paid'], $order['payment_id']);
+            if ($order->order_status_id != $oldOrder->order_status_id) {
+                
+                switch($order->order_status_id) {
+
+                    case 2:
+                        $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
+                        break;
+
+                    case 4:
+                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ], $order->id);
+                        break;
+
+                    default:
+                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null ], $order->id);
+                        break;
+                }
+
             }
+
+            /*if (isset($input['order_status_id']) && $input['order_status_id'] == 5 && !empty($order)) {
+                $this->paymentRepository->update(['status' => 'Paid'], $order['payment_id']);
+            }*/
 
             event(new OrderChangedEvent($oldStatus, $order));
 
             if (setting('enable_notifications', false)) {
+                
                 if (isset($input['order_status_id']) && $input['order_status_id'] != $oldOrder->order_status_id) {
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
@@ -379,6 +402,7 @@ class OrderAPIController extends Controller
                     }
                 }
             }
+
         } catch (ValidatorException $e) {
             return $this->sendError($e->getMessage());
         }
