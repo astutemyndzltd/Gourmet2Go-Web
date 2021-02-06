@@ -58,7 +58,7 @@ class AssignedOrder extends Notification
         $message = new FcmMessage();
 
         $notification = [
-            'title' => "Order #" . $this->order->id . " of " . $this->order->user->name ." has been assigned to you",
+            'title' => "A new order has been assigned to you",
             'text' => $this->order->foodOrders[0]->food->restaurant->name,
             'image' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
             'icon' => $this->order->foodOrders[0]->food->restaurant->getFirstMediaUrl('image', 'thumb'),
