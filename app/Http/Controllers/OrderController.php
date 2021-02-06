@@ -20,6 +20,7 @@ use App\Http\Requests\CreateOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Notifications\AssignedOrder;
 use App\Notifications\StatusChangedOrder;
+use App\Notifications\StatusChangedOrderDriver;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
@@ -258,7 +259,7 @@ class OrderController extends Controller
                     $orderStatus->$id = $next;
                     break;
                 }
-            }    
+            }
         }
 
         $customFieldsValues = $order->customFieldsValues()->with('customField')->get();
@@ -300,24 +301,23 @@ class OrderController extends Controller
             $order = $this->orderRepository->update($input, $id);
 
             if ($order->order_status_id != $oldOrder->order_status_id) {
-                
-                switch($order->order_status_id) {
+
+                switch ($order->order_status_id) {
 
                     case 2:
-                        $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ]);
+                        $order->statusDetails()->create(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']]);
                         break;
 
                     case 4:
-                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration'] ], $order->id);
+                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => $input['status_duration']], $order->id);
                         break;
 
                     default:
-                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null ], $order->id);
+                        $order->statusDetails()->update(['order_status_id' => $order->order_status_id, 'lasts_for' => null], $order->id);
                         break;
                 }
-
             }
-            
+
             if (setting('enable_notifications', false)) {
 
                 $order = $order->fresh();
@@ -333,9 +333,19 @@ class OrderController extends Controller
                         Notification::send([$driver], new AssignedOrder($order));
                     }
                 }
+
+                if ($order['driver_id'] == $oldOrder['driver_id'] && $order['order_status_id'] != $oldOrder['order_status_id']) {
+                    
+                    $driver = $this->userRepository->findWithoutFail($input['driver_id']);
+
+                    if (!empty($driver)) {
+                        Notification::send([$driver], new StatusChangedOrderDriver($order));
+                    }
+                }
+
             }
 
-            $this->paymentRepository->update([ "status" => $input['status'],], $order['payment_id']);
+            $this->paymentRepository->update(["status" => $input['status'],], $order['payment_id']);
             //dd($input['status']);
 
             event(new OrderChangedEvent($oldStatus, $order));
@@ -343,9 +353,7 @@ class OrderController extends Controller
             foreach (getCustomFieldsValues($customFields, $request) as $value) {
                 $order->customFieldsValues()->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
             }
-
-        } 
-        catch (ValidatorException $e) {
+        } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
