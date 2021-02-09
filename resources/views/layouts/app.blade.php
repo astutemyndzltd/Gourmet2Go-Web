@@ -213,6 +213,18 @@
                     let notification = new Notification(notificationTitle, notificationOptions);
 					playAlert('eventually');
                 });
+
+                messaging.onBackgroundMessage(function(payload) {
+                    console.log("Message received. ", payload);
+                    notificationTitle = payload.data.title;
+                    notificationOptions = {
+                        body: payload.data.body,
+                        icon: payload.data.icon,
+                        image:  payload.data.image
+                    };
+                    let notification = new Notification(notificationTitle, notificationOptions);
+					playAlert('eventually');
+                });
             });
 
         function getRegToken(argument) {
