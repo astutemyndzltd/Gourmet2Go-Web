@@ -191,7 +191,7 @@
     <script type="text/javascript">
         const messageChannel = new MessageChannel();
         const messaging = firebase.messaging();
-        navigator.serviceWorker.register("{{url('firebase/sw-js')}}")
+        navigator.serviceWorker.register("{{url('/sw-js')}}")
             .then((registration) => {
                 console.log(registration);
                 messaging.useServiceWorker(registration);
