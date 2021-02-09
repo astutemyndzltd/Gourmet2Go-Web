@@ -6,6 +6,14 @@ importScripts('//www.gstatic.com/firebasejs/7.2.0/firebase-messaging.js');
 const messaging = firebase.messaging();
 let channelPort2;
 
+self.addEventListener('install', function(event) {
+    event.waitUntil(self.skipWaiting()); // Activate worker immediately
+});
+
+self.addEventListener('activate', function(event) {
+    event.waitUntil(self.clients.claim()); // Become available to all pages
+});
+
 self.addEventListener("message", event => {
   if (event.data && event.data.type === 'INIT_PORT') {
     channelPort2 = event.ports[0];
