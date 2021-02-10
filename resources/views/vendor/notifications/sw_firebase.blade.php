@@ -26,7 +26,7 @@ self.addEventListener('message', event => {
 });
 
 
-messaging.setBackgroundMessageHandler(function(payload) {
+messaging.onBackgroundMessage((payload) => {
 
     console.log('[firebase-messaging-sw.js] Received background message ', payload);
 
@@ -41,7 +41,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
 
     console.log('port -> ', channelPort2);
 
-    //return self.registration.showNotification(notificationTitle,notificationOptions);
+    self.registration.showNotification(notificationTitle,notificationOptions);
 
 });
 
