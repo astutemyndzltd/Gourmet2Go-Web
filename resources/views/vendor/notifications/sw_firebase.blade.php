@@ -25,8 +25,6 @@ messaging.onBackgroundMessage((payload) => {
 
     broadcastChannel.postMessage({});
 
-    //self.registration.showNotification(notificationTitle, notificationOptions);
-
 });
 
 
