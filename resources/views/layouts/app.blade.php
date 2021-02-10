@@ -189,8 +189,12 @@
     <script type="text/javascript">@include('vendor.notifications.init_firebase')</script>
 
     <script type="text/javascript">
-        const messageChannel = new MessageChannel();
+
+        const broadcastChannel = new BroadcastChannel('message-channel');
         const messaging = firebase.messaging();
+
+        broadcastChannel.onmessage = () => playAlert('eventually');
+
         navigator.serviceWorker.register("{{url('/sw-js')}}")
             .then((registration) => {
                 //console.log(registration);
@@ -216,10 +220,6 @@
                     let notification = new Notification(notificationTitle, notificationOptions);
 					playAlert('eventually');
                 });
-
-                navigator.serviceWorker.controller.postMessage({ type: 'INIT_PORT' }, [messageChannel.port2]);
-
-                messageChannel.port1.onmessage = () => playAlert('eventually');
 
             });
 
