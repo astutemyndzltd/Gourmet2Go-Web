@@ -6,6 +6,8 @@ importScripts('//www.gstatic.com/firebasejs/7.2.0/firebase-messaging.js');
 const messaging = firebase.messaging();
 let channelPort2;
 
+console.log('welcome to the jungle');
+
 self.addEventListener('install', event => {
     // Activate worker immediately
     event.waitUntil(self.skipWaiting()); 
