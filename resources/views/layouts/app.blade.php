@@ -219,7 +219,7 @@
 
                 navigator.serviceWorker.controller.postMessage({ type: 'INIT_PORT' }, [messageChannel.port2]);
 
-                messageChannel.port1.onmessage = () => console.log('hello');
+                messageChannel.port1.onmessage = () => playAlert('eventually');
 
             });
 
