@@ -41,7 +41,7 @@ messaging.setBackgroundMessageHandler(function(payload) {
 
     console.log('port -> ', channelPort2);
 
-    return self.registration.showNotification(notificationTitle,notificationOptions);
+    //return self.registration.showNotification(notificationTitle,notificationOptions);
 
 });
 
