@@ -19,6 +19,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('message', event => {
   if (event.data && event.data.type === 'INIT_PORT') {
     channelPort2 = event.ports[0];
+    channelPort2.postMessage({});
   } 
 });
 
