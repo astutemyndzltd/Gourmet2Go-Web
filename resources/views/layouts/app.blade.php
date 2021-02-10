@@ -193,7 +193,7 @@
         const messaging = firebase.messaging();
         navigator.serviceWorker.register("{{url('/sw-js')}}")
             .then((registration) => {
-                console.log(registration);
+                //console.log(registration);
                 messaging.useServiceWorker(registration);
                 messaging.requestPermission()
                     .then(function() {
