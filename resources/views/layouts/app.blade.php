@@ -195,7 +195,7 @@
 
         broadcastChannel.onmessage = () => playAlert('eventually');
 
-        navigator.serviceWorker.register("{{url('/sw-js')}}")
+        navigator.serviceWorker.register("{{ url('/sw-js') }}")
             .then((registration) => {
                 //console.log(registration);
                 messaging.useServiceWorker(registration);
@@ -203,7 +203,6 @@
                     .then(function() {
                         console.log('Notification permission granted.');
                         getRegToken();
-
                     })
                     .catch(function(err) {
                         console.log('Unable to get permission to notify.', err);
