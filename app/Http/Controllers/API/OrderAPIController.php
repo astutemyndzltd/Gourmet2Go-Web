@@ -158,15 +158,15 @@ class OrderAPIController extends Controller
     private function isValidForOrder($input) 
     {
         $foodOrders = $input['foods'];
-        $foodIds = array_map(function($fo) {return $fo->food_id;}, $foodOrders);
-        $foods = $this->foodRepository->findMany($foodOrders);
+        $foodIds = array_map(function($fo) {return $fo['food_id'];}, $foodOrders);
+        $foods = $this->foodRepository->findMany($foodIds);
+        file_put_contents('order.txt', json_encode($foods));
     }
 
 
     private function stripePaymentNew(Request $request)
     {
         $input = $request->all();
-        file_put_contents('order.txt', json_encode($input));
         $state = $this->isValidForOrder($input);
         return;
         
