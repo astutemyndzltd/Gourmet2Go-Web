@@ -281,7 +281,9 @@ class OrderAPIController extends Controller
     {
         $input = $request->all();
 
-        if (!$this->isValidForOrder($input)) $this->sendError('Validation Error');
+        if (!$this->isValidForOrder($input))  {
+            return $this->sendError('validation error');
+        }
         
         $stripe = Stripe::make(Config::get('services.stripe.secret'));
         $paymentMethodId = isset($input['payment_method_id']) ? $input['payment_method_id'] : null;
