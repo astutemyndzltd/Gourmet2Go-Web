@@ -173,6 +173,8 @@ class OrderAPIController extends Controller
         // restaurant validation
 
         $orderType = $input['order_type'];
+
+        file_put_contents('order.txt', json_encode($restaurant->available_for_preorder));
         
         if($orderType == 'Delivery') {
             if(!$restaurant->available_for_delivery) {
@@ -194,8 +196,6 @@ class OrderAPIController extends Controller
 
         }
 
-
-        file_put_contents('order.txt', json_encode('yahoo'));
     }
 
 
