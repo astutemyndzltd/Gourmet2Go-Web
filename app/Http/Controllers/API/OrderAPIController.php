@@ -55,7 +55,6 @@ class OrderAPIController extends Controller
     private $paymentRepository;
     /** @var  NotificationRepository */
     private $notificationRepository;
-
     private $foodRepository;
 
     /**
@@ -69,6 +68,7 @@ class OrderAPIController extends Controller
      */
     public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository, FoodRepository $foodRepository)
     {
+        date_default_timezone_set('Europe/London');
         $this->orderRepository = $orderRepo;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->cartRepository = $cartRepo;
@@ -161,7 +161,6 @@ class OrderAPIController extends Controller
         $foodIds = array_map(function($fo) {return $fo['food_id'];}, $foodOrders);
         $foods = $this->foodRepository->findMany($foodIds);
         $restaurant = $foods[0]->restaurant;
-        file_put_contents('order.txt', json_encode($restaurant));
 
         // stock validation 
 
@@ -174,9 +173,7 @@ class OrderAPIController extends Controller
         // restaurant validation
 
         $orderType = $input['order_type'];
-
-
-        
+ 
         if($orderType == 'Delivery') {
             if(!$restaurant->available_for_delivery) {
                 return false;
@@ -186,10 +183,19 @@ class OrderAPIController extends Controller
 
         $preorderInfo = $input['preorder_info'];
         $isPreorder = $preorderInfo != null && $preorderInfo != '';
+        $currentUKTime = date("d-m-Y H:i:s");
+
+        file_put_contents('order.txt', $currentUKTime);
+
+
+
+
+
+        
 
         if ($isPreorder) {
             // pre-order
-            if(!$restaurant->available_for_preorder) return false;
+            if (!$restaurant->available_for_preorder) return false;
         }
         else {
             // instant order
