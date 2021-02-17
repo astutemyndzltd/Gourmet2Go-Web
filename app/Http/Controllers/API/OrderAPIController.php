@@ -184,10 +184,15 @@ class OrderAPIController extends Controller
         $preorderInfo = $input['preorder_info'];
         $isPreorder = $preorderInfo != null && $preorderInfo != '';
         
-        //$currentDay = strtolower(date('l'));
+        /********************************** */
+        if ($restaurant->closed) return false;
+            $openingTimes = $restaurant->opening_times;
+            if (!isset($openingTimes)) return false;
+            $today = strtolower(date('l'));
+            $slotsForToday = $openingTimes[$today];
 
 
-        file_put_contents('order.txt', date('h:i A'));
+        file_put_contents('order.txt', json_encode($slotsForToday));
 
 
         if ($isPreorder) {
@@ -198,8 +203,12 @@ class OrderAPIController extends Controller
         else {
             // instant order
             if ($restaurant->closed) return false;
-            $slots = $restaurant->opening_times;
-            if (!isset($slots)) return false;
+            $openingTimes = $restaurant->opening_times;
+            if (!isset($openingTimes)) return false;
+            $today = strtolower(date('l'));
+            $slotsForToday = $openingTimes[$today];
+
+
             $currentUKTime = date("d-m-Y H:i:s");
 
         }
