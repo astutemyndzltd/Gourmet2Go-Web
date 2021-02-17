@@ -190,8 +190,42 @@ class OrderAPIController extends Controller
             // pre-order
             if (!$restaurant->available_for_preorder) return false;
             $forToday = !(strpos($preorderInfo, ',') !== false);
-            if ($forToday && $restaurant->closed) return false;
-            file_put_contents('order.txt', 'hello');
+            $openingTimes = $restaurant->opening_times;
+            if (!isset($openingTimes)) return false;
+            
+            if ($forToday) {
+
+                if ($restaurant->closed) return false;
+                $today = strtolower(date('l'));
+                $slotsForToday = $openingTimes[$today];
+                if (!isset($slotsForToday)) return false;
+
+                $time = strtotime($preorderInfo);
+                $fallsInAny = false;
+
+
+                foreach ($slotsForToday as $slot) {
+                    $opensAt = strtotime($slot['opens_at']);
+                    $closesAt = strtotime($slot['closes_at']);
+
+                    if ($time >= $opensAt && $time <= $closesAt) {
+                        $fallsInAny = true;
+                        break;
+                    }
+                }
+
+                if (!$fallsInAny) return false;
+
+            }
+            else {
+
+                $info = explode(", ", $preorderInfo);
+                $preorderDate = $info[0];
+                $preorderTime = $info[1];
+
+                file_put_contents('order.txt', "date -> $preorderDate | time -> $preorderTime");
+            }
+            
         }
         else {
             // instant order
