@@ -20,6 +20,7 @@ use App\Notifications\NewOrder;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CartRepository;
 use App\Repositories\FoodOrderRepository;
+use App\Repositories\FoodRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\PaymentRepository;
@@ -55,6 +56,8 @@ class OrderAPIController extends Controller
     /** @var  NotificationRepository */
     private $notificationRepository;
 
+    private $foodRepository;
+
     /**
      * OrderAPIController constructor.
      * @param OrderRepository $orderRepo
@@ -64,7 +67,7 @@ class OrderAPIController extends Controller
      * @param NotificationRepository $notificationRepo
      * @param UserRepository $userRepository
      */
-    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
+    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository, FoodRepository $foodRepository)
     {
         $this->orderRepository = $orderRepo;
         $this->foodOrderRepository = $foodOrderRepository;
@@ -72,6 +75,7 @@ class OrderAPIController extends Controller
         $this->userRepository = $userRepository;
         $this->paymentRepository = $paymentRepo;
         $this->notificationRepository = $notificationRepo;
+        $this->foodRepository = $foodRepository;
     }
 
     /**
@@ -141,6 +145,7 @@ class OrderAPIController extends Controller
         }
 
         $payment = $request->only('payment');
+
         if (isset($payment['payment']) && $payment['payment']['method']) {
             if ($payment['payment']['method'] == "Credit Card") {
                 return $this->stripePaymentNew($request);
@@ -150,10 +155,20 @@ class OrderAPIController extends Controller
         }
     }
 
+    private function isValidForOrder($input) 
+    {
+        $foodOrders = $input['foods'];
+        $foodIds = array_map(function($fo) {return $fo->food_id;}, $foodOrders);
+        $foods = $this->foodRepository->findMany($foodOrders);
+    }
+
 
     private function stripePaymentNew(Request $request)
     {
         $input = $request->all();
+        file_put_contents('order.txt', json_encode($input));
+        $state = $this->isValidForOrder($input);
+        return;
         
         $stripe = Stripe::make(Config::get('services.stripe.secret'));
         $paymentMethodId = isset($input['payment_method_id']) ? $input['payment_method_id'] : null;
