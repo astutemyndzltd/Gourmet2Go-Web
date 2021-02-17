@@ -280,8 +280,8 @@ class OrderAPIController extends Controller
     private function stripePaymentNew(Request $request)
     {
         $input = $request->all();
-        $state = $this->isValidForOrder($input);
-        return;
+
+        if (!$this->isValidForOrder($input)) $this->sendError('Validation Error');
         
         $stripe = Stripe::make(Config::get('services.stripe.secret'));
         $paymentMethodId = isset($input['payment_method_id']) ? $input['payment_method_id'] : null;
