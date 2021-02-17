@@ -201,13 +201,14 @@ class OrderAPIController extends Controller
             if(!isset($slotsForToday)) return false;
 
             $time = strtotime(date('h:i A'));
-            file_put_contents('order.txt', date('h:i A'));
             $fallsInAny = false;
 
 
             foreach ($slotsForToday as $slot) {
                 $opensAt = strtotime($slot['opens_at']);
                 $closesAt = strtotime($slot['closes_at']);
+
+                file_put_contents('order.txt', "opens -> $opensAt | closes -> $closesAt | time -> $time");
 
                 if ($time >= $opensAt && $time <= $closesAt) {
                     $fallsInAny = true;
