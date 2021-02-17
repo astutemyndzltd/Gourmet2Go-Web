@@ -161,6 +161,7 @@ class OrderAPIController extends Controller
         $foodIds = array_map(function($fo) {return $fo['food_id'];}, $foodOrders);
         $foods = $this->foodRepository->findMany($foodIds);
         $restaurant = $foods[0]->restaurant;
+        file_put_contents('order.txt', json_encode($restaurant->available_for_preorder));
 
         // stock validation 
 
@@ -174,7 +175,7 @@ class OrderAPIController extends Controller
 
         $orderType = $input['order_type'];
 
-        file_put_contents('order.txt', json_encode($restaurant->available_for_preorder));
+
         
         if($orderType == 'Delivery') {
             if(!$restaurant->available_for_delivery) {
