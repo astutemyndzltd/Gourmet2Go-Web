@@ -184,14 +184,15 @@ class OrderAPIController extends Controller
         $preorderInfo = $input['preorder_info'];
         $isPreorder = $preorderInfo != null && $preorderInfo != '';
         $currentUKTime = date("d-m-Y H:i:s");
-
-        file_put_contents('order.txt', $currentUKTime);
-
+        file_put_contents('order.txt', date('l'));
 
 
         if ($isPreorder) {
             // pre-order
             if (!$restaurant->available_for_preorder) return false;
+
+
+
         }
         else {
             // instant order
