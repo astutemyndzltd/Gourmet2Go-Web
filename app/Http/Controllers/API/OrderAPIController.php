@@ -184,7 +184,10 @@ class OrderAPIController extends Controller
         $preorderInfo = $input['preorder_info'];
         $isPreorder = $preorderInfo != null && $preorderInfo != '';
         $currentUKTime = date("d-m-Y H:i:s");
-        file_put_contents('order.txt', date('l'));
+        $currentDay = strtolower(date('l'));
+
+
+        file_put_contents('order.txt', $currentDay);
 
 
         if ($isPreorder) {
