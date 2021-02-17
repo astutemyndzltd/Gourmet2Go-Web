@@ -159,7 +159,7 @@ class OrderAPIController extends Controller
     private function isValidForOrder($input) 
     {
         $foodOrders = $input['foods'];
-        $foodIds = array_map(function($fo) {return $fo['food_id'];}, $foodOrders);
+        $foodIds = array_map(function($fo) { return $fo['food_id']; }, $foodOrders);
         $foods = $this->foodRepository->findMany($foodIds);
         $restaurant = $foods[0]->restaurant;
 
@@ -187,6 +187,7 @@ class OrderAPIController extends Controller
         
 
         if ($isPreorder) {
+
             // pre-order
             if (!$restaurant->available_for_preorder) return false;
             $forToday = !(strpos($preorderInfo, ',') !== false);
@@ -225,7 +226,6 @@ class OrderAPIController extends Controller
                 $preorderDay = strtolower(date('l', strtotime($preorderDate)));
                 $slotsForTheDay = $openingTimes[$preorderDay];
                 if(!isset($slotsForTheDay)) return false;
-
 
                 $time = strtotime($preorderTime);
                 $fallsInAny = false;
