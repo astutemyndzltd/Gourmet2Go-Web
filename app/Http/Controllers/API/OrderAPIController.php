@@ -189,10 +189,6 @@ class OrderAPIController extends Controller
 
 
 
-
-
-        
-
         if ($isPreorder) {
             // pre-order
             if (!$restaurant->available_for_preorder) return false;
