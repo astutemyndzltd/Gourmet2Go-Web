@@ -228,10 +228,20 @@ class OrderAPIController extends Controller
 
 
                 $time = strtotime($preorderTime);
-                $fallsInAny = false;    
+                $fallsInAny = false;
+                
+                foreach ($slotsForTheDay as $slot) {
+                    $opensAt = strtotime($slot['opens_at']);
+                    $closesAt = strtotime($slot['closes_at']);
+    
+                    if ($time >= $opensAt && $time <= $closesAt) {
+                        $fallsInAny = true;
+                        break;
+                    }
+                }
+    
+                if (!$fallsInAny) return false;
 
-
-                file_put_contents('order.txt', "date -> $preorderDate | day -> $time");
             }
             
         }
@@ -261,6 +271,8 @@ class OrderAPIController extends Controller
             if (!$fallsInAny) return false;
 
         }
+
+        return true;
 
     }
 
