@@ -222,7 +222,7 @@ class OrderAPIController extends Controller
                 $info = explode(", ", $preorderInfo);
                 $preorderDate = $info[0];
                 $preorderTime = $info[1];
-                $preorderDay = date('D', strtotime($preorderDate));
+                $preorderDay = strtolower(date('l', strtotime($preorderDate)));
                 file_put_contents('order.txt', "date -> $preorderDate | day -> $preorderDay");
             }
             
