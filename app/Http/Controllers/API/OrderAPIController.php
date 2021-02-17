@@ -195,7 +195,6 @@ class OrderAPIController extends Controller
         }
 
 
-
         file_put_contents('order.txt', json_encode($restaurant->available_for_preorder));
     }
 
