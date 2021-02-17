@@ -34,6 +34,7 @@ use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Illuminate\Support\Facades\Config;
 use Cartalyst\Stripe\Stripe;
+use Opis\Closure\ClosureStream;
 
 //use Stripe\Token;
 
@@ -184,18 +185,8 @@ class OrderAPIController extends Controller
         $preorderInfo = $input['preorder_info'];
         $isPreorder = $preorderInfo != null && $preorderInfo != '';
         
-        /********************************** */
-        if ($restaurant->closed) return false;
-            $openingTimes = $restaurant->opening_times;
-            if (!isset($openingTimes)) return false;
-            $today = strtolower(date('l'));
-            $slotsForToday = $openingTimes[$today];
 
-
-        file_put_contents('order.txt', json_encode($slotsForToday));
-
-
-        if ($isPreorder) {
+        if (!$isPreorder) {
             // pre-order
             if (!$restaurant->available_for_preorder) return false;
 
@@ -207,6 +198,29 @@ class OrderAPIController extends Controller
             if (!isset($openingTimes)) return false;
             $today = strtolower(date('l'));
             $slotsForToday = $openingTimes[$today];
+            if(!isset($slotsForToday)) return false;
+
+            $time = strtotime(date('h:i A'));
+            file_put_contents('order.txt', $time);
+            $fallBetweenAny = false;
+
+
+            foreach ($slotsForToday as $slot) {
+                $opensAt = strtotime($slot['opens_at']);
+                $closesAt = strtotime($slot['closes_at']);
+
+                if ($time >= $opensAt && $time <= $closesAt) {
+                    $fallBetweenAny = true;
+                    break;
+                }
+            }
+
+
+
+
+
+
+
 
 
             $currentUKTime = date("d-m-Y H:i:s");
