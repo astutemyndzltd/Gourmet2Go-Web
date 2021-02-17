@@ -190,8 +190,8 @@ class OrderAPIController extends Controller
             // pre-order
             if (!$restaurant->available_for_preorder) return false;
             $forToday = !(strpos($preorderInfo, ',') !== false);
-            file_put_contents('order.txt', "For Today -> $forToday");
-
+            if ($forToday && $restaurant->closed) return false;
+            file_put_contents('order.txt', 'hello');
         }
         else {
             // instant order
