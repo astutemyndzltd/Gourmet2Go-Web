@@ -78,8 +78,10 @@ class DeliveryAddressAPIController extends Controller
      */
     public function store(Request $request)
     {
-        $uniqueInput = $request->only("address");
-        $otherInput = $request->except("address");
+        
+        $uniqueInput = $request->only('place_id', 'user_id', 'address');
+        $otherInput = $request->except('place_id', 'user_id', 'address');
+
         try {
             $deliveryAddress = $this->deliveryAddressRepository->updateOrCreate($uniqueInput, $otherInput);
 
