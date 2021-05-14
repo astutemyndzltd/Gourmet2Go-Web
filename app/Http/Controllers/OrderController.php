@@ -170,8 +170,6 @@ class OrderController extends Controller
 
         /*********** ADDING NECESSARY DATA FOR RECEIPT ********/
 
-        file_put_contents('order.txt', json_encode($order->user->custom_fields['phone']));
-
         $orderDetails = [];
         $orderDetails['id'] = $order->id;
         $orderDetails['hint'] = $order->hint;
