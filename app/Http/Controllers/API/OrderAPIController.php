@@ -204,7 +204,6 @@ class OrderAPIController extends Controller
                 $time = strtotime($preorderInfo);
                 $fallsInAny = false;
 
-
                 foreach ($slotsForToday as $slot) {
                     $opensAt = strtotime($slot['opens_at']);
                     $closesAt = strtotime($slot['closes_at']);
